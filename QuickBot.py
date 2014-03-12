@@ -103,7 +103,7 @@ class QuickBot():
     # UDP
     port = config.PORT
     robotSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    robotSocket.setblocking(False)
+    robotSocket.settimeout(0.005)
 
     # === Class Methods ===
     # Constructor
@@ -214,7 +214,7 @@ class QuickBot():
     def parseCmdBuffer(self):
         try:
             line = self.robotSocket.recv(1024)
-        except socket.error as msg:
+        except socket.timeout:
             return
 
         self.cmdBuffer += line

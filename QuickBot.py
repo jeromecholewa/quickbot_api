@@ -101,8 +101,6 @@ class QuickBot():
     cmdBuffer = ''
 
     # UDP
-    baseIP = config.BASE_IP
-    robotIP = config.ROBOT_IP
     port = config.PORT
     robotSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     robotSocket.setblocking(False)
@@ -139,6 +137,8 @@ class QuickBot():
         self.baseIP = baseIP
         self.robotIP = robotIP
         self.robotSocket.bind((self.robotIP, self.port))
+
+        self._last_ticks = (0, 0)
 
     # Getters and Setters
     def setPWM(self, pwm):
@@ -179,28 +179,22 @@ class QuickBot():
 
     # Methods
     def run(self):
-        global RUN_FLAG
+    
+    	self._adc.start()
+    	
+        while True:
+            self.update()
 
-        try:
-            while RUN_FLAG is True:
-                self.update()
-
-                # Flash BBB LED
-                if self.ledFlag is True:
-                    self.ledFlag = False
-                    GPIO.output(self.ledPin, GPIO.HIGH)
-                else:
-                    self.ledFlag = True
-                    GPIO.output(self.ledPin, GPIO.LOW)
-                time.sleep(self.sampleTime)
-        except:
-            RUN_FLAG_LOCK.acquire()
-            RUN_FLAG = False
-            RUN_FLAG_LOCK.release()
-            raise
+            # Flash BBB LED
+            if self.ledFlag is True:
+                self.ledFlag = False
+                GPIO.output(self.ledPin, GPIO.HIGH)
+            else:
+                self.ledFlag = True
+                GPIO.output(self.ledPin, GPIO.LOW)
+            time.sleep(self.sampleTime)
 
         self.cleanup()
-        return
 
     def cleanup(self):
         sys.stdout.write("Shutting down...")
@@ -218,7 +212,6 @@ class QuickBot():
         self.parseCmdBuffer()
 
     def parseCmdBuffer(self):
-        global RUN_FLAG
         try:
             line = self.robotSocket.recv(1024)
         except socket.error as msg:
@@ -312,12 +305,26 @@ class QuickBot():
         left_speed = self._adc.encoder0_speed
         right_ticks = self._adc.encoder1_ticks
         right_speed = self._adc.encoder1_speed
+        
+        if self.pwm[0] > 20:
+            self.encPos[0] += left_ticks - self._last_ticks[0]
+            self.encVel[0] = 3.14 / 16 * 121000 / left_speed
+        elif self.pwm[0] < -20:
+            self.encPos[0] -= left_ticks - self._last_ticks[0]
+            self.encVel[0] = -3.14 / 16 * 121000 / left_speed
+        else:
+            self.encVel[0] = 0
 
-        self.encPos[0] = left_ticks
-        self.encPos[1] = right_ticks
-
-        self.encVel[0] = 3.14 / 16 * 121000 / left_speed
-        self.encVel[1] = 3.14 / 16 * 121000 / right_speed
+        if self.pwm[1] > 20:
+            self.encPos[1] += right_ticks - self._last_ticks[1]
+            self.encVel[1] = 3.14 / 16 * 121000 / left_speed
+        elif self.pwm[1] < -20:
+            self.encPos[1] -= right_ticks - self._last_ticks[1]
+            self.encVel[1] = -3.14 / 16 * 121000 / left_speed
+        else:
+            self.encVel[1] = 0
+        
+        self._last_ticks = left_ticks, right_ticks
 
 
 def recursiveMeanVar(x, l, mu, sigma2):

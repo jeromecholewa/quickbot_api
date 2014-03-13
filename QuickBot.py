@@ -138,7 +138,9 @@ class QuickBot():
         self.robotIP = robotIP
         self.robotSocket.bind((self.robotIP, self.port))
 
-        self._last_ticks = (0, 0)
+        self._last_ticks = (0, 0)  # remember last tick reading (to compute delta)
+        self._pwm_ema = (0, 0)  # models actual (inertial) speed by EMA-averaging pwm
+        self._ema_period = config.PWM_EMA_PERIOD  # EMA-averaging period (1.0 means no averaging)
 
     # Getters and Setters
     def setPWM(self, pwm):
@@ -148,6 +150,9 @@ class QuickBot():
             max(pwm[LEFT], self.pwmLimits[MIN]), self.pwmLimits[MAX])
         self.pwm[RIGHT] = min(
             max(pwm[RIGHT], self.pwmLimits[MIN]), self.pwmLimits[MAX])
+
+        self._pwm_ema[LEFT] += self.pwm[LEFT] / self._ema_period
+        self._pwm_ema[RIGHT] += self.pwm[RIGHT] / self._ema_period
 
         # Left motor
         if self.pwm[LEFT] > 0:
@@ -306,21 +311,21 @@ class QuickBot():
         right_ticks = self._adc.encoder1_ticks
         right_speed = self._adc.encoder1_speed
         
-        if self.pwm[0] > 20:
+        if self._pwm_ema[0] > 20:
             self.encPos[0] += left_ticks - self._last_ticks[0]
-            self.encVel[0] = 3.14 / 16 * 121000 / left_speed
-        elif self.pwm[0] < -20:
+            self.encVel[0] = 121000. / left_speed
+        elif self._pwm_ema[0] < -20:
             self.encPos[0] -= left_ticks - self._last_ticks[0]
-            self.encVel[0] = -3.14 / 16 * 121000 / left_speed
+            self.encVel[0] = 121000. / left_speed
         else:
             self.encVel[0] = 0
 
-        if self.pwm[1] > 20:
+        if self._pwm_ema[1] > 20:
             self.encPos[1] += right_ticks - self._last_ticks[1]
-            self.encVel[1] = 3.14 / 16 * 121000 / left_speed
-        elif self.pwm[1] < -20:
+            self.encVel[1] = 121000. / left_speed
+        elif self._pwm_ema[1] < -20:
             self.encPos[1] -= right_ticks - self._last_ticks[1]
-            self.encVel[1] = -3.14 / 16 * 121000 / left_speed
+            self.encVel[1] = 121000. / left_speed
         else:
             self.encVel[1] = 0
         

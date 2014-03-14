@@ -121,8 +121,6 @@ class QuickBot():
         PWM.start(self.pwmPin[LEFT], 0)
         PWM.start(self.pwmPin[RIGHT], 0)
 
-        # Set motor speed to 0
-        self.setPWM([0, 0])
 
         # Initialize ADC
         self._adc = adc.Capture()
@@ -139,8 +137,11 @@ class QuickBot():
         self.robotSocket.bind((self.robotIP, self.port))
 
         self._last_ticks = (0, 0)  # remember last tick reading (to compute delta)
-        self._pwm_ema = (0, 0)  # models actual (inertial) speed by EMA-averaging pwm
+        self._pwm_ema = [0, 0]  # models actual (inertial) speed by EMA-averaging pwm
         self._ema_period = config.PWM_EMA_PERIOD  # EMA-averaging period (1.0 means no averaging)
+
+        # Set motor speed to 0
+        self.setPWM([0, 0])
 
     # Getters and Setters
     def setPWM(self, pwm):

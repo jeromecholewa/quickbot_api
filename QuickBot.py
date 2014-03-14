@@ -323,10 +323,10 @@ class QuickBot():
 
         if self._pwm_ema[1] > 20:
             self.encPos[1] += right_ticks - self._last_ticks[1]
-            self.encVel[1] = 121000. / left_speed
+            self.encVel[1] = 121000. / right_speed
         elif self._pwm_ema[1] < -20:
             self.encPos[1] -= right_ticks - self._last_ticks[1]
-            self.encVel[1] = 121000. / left_speed
+            self.encVel[1] = 121000. / right_speed
         else:
             self.encVel[1] = 0
         

@@ -56,7 +56,7 @@ class QuickBot():
     pwmPin = (config.MOTOR_LEFT['pwm'], config.MOTOR_RIGHT['pwm'])
 
     # ADC Pins
-    irPin = ( 3, 1, 5, 4, 6 )
+    irPin = config.IR_PINS
     encoderPin = ( 0, 2 )  # AIN0, AIN2
 
     # Encoder counting parameter and variables

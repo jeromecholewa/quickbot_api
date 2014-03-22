@@ -1,8 +1,8 @@
 #
 # Pin assignments for QuickBot
 #
-BASE_IP = '192.168.0.8'
-ROBOT_IP = '192.168.0.9'
+BASE_IP = '192.168.0.6'
+ROBOT_IP = '192.168.0.8'
 PORT = 5005
 
 MOTOR_LEFT = {
@@ -21,10 +21,12 @@ MOTOR_RIGHT = {
     'threshold': 2500
 }
 
+IR_PINS = (3, 1, 5, 6, 4)
+
 # Bot speed is roughly estimated from PWM signal by applying EMA-averaging over
 # this period. For example, if PWM goes from zero to 100, speed does not immediately
 # catch up, because of the inertia. EMA models this inertia. This estimate is used
 # for suppressing encoder readings when bot is not moving (or some noise may result in
 # bogus readings). Time value of one period is 0.005 sec. Therefore, set period to 100
 # to introduce 0.5sec inertia lag.
-PWM_EMA_PERIOD = 1.0
+PWM_EMA_PERIOD = 100.0

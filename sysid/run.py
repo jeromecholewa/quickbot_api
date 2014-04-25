@@ -41,6 +41,6 @@ if __name__ == '__main__':
 
     with open(cmd.filename, 'w') as f:
         for datum in data:
-            f.write(', '.join(str(x) for x in datum))
+            f.write(', '.join(str(x) for x in datum) + '\n')
 
     print 'Data written to', cmd.filename

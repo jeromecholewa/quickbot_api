@@ -11,9 +11,11 @@ from sysid.motor import Motors
 
 if __name__ == '__main__':
 
-    cmd = argparse.ArgumentParser('Capture encoder ticks and speed response for step torque input')
-    cmd.add_argument('torque', type=int, help='torque value in the range of 0-100', default=80)
-    cmd.add_argument('filename', type=str, help='file name for writing CSV data', default='sysid.csv')
+    parser = argparse.ArgumentParser('Capture encoder ticks and speed response for step torque input')
+    parser.add_argument('torque', type=int, help='torque value in the range of 0-100', default=80)
+    parser.add_argument('filename', type=str, help='file name for writing CSV data', default='sysid.csv')
+
+    cmd = parser.parse_args()
 
     encoder = Encoder(config)
     motors = Motors(config)

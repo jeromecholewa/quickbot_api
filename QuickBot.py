@@ -103,8 +103,8 @@ class QuickBot():
         self._adc = adc.Capture()
         self._adc.encoder0_pin = self.encoderPin[0]
         self._adc.encoder1_pin = self.encoderPin[1]
-        self._adc.encoder0_threshold = config.MOTOR_LEFT['threshold']
-        self._adc.encoder1_threshold = config.MOTOR_RIGHT['threshold']
+        self._adc.encoder0_threshold = config.MOTOR_LEFT['encoder_threshold']
+        self._adc.encoder1_threshold = config.MOTOR_RIGHT['encoder_threshold']
         self._adc.encoder0_delay = 200
         self._adc.encoder1_delay = 200
 

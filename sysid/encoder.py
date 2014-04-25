@@ -9,8 +9,8 @@ class Encoder:
         self._adc = adc.Capture()
         self._adc.encoder0_pin = config.MOTOR_LEFT['encoder_pin']
         self._adc.encoder1_pin = config.MOTOR_RIGHT['encoder_pin']
-        self._adc.encoder0_threshold = config.MOTOR_LEFT['threshold']
-        self._adc.encoder1_threshold = config.MOTOR_RIGHT['threshold']
+        self._adc.encoder0_threshold = config.MOTOR_LEFT['encoder_threshold']
+        self._adc.encoder1_threshold = config.MOTOR_RIGHT['encoder_threshold']
         self._adc.encoder0_delay = config.MOTOR_LEFT['encoder_delay']
         self._adc.encoder1_delay = config.MOTOR_RIGHT['encoder_delay']
 

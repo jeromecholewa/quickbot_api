@@ -14,14 +14,12 @@ import sys
 import time
 import re
 import socket
-import threading
 import numpy as np
 import config
 import beaglebone_pru_adc as adc
 
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
-import Adafruit_BBIO.ADC as ADC
 
 # Constants
 LEFT = 0
@@ -61,12 +59,6 @@ class QuickBot():
 
     # Encoder counting parameter and variables
     ticksPerTurn = 16  # Number of ticks on encoder disc
-    encWinSize = 2**5  # Should be power of 2
-    minPWMThreshold = [45, 45]  # Threshold on the minimum value to turn wheel
-    encTPrev = [0.0, 0.0]
-    encThreshold = [0.0, 0.0]
-    encTickState = [0, 0]
-    encTickStateVec = np.zeros((2, encWinSize))
 
     # Constraints
     pwmLimits = [-100, 100]  # [min, max]
@@ -79,22 +71,8 @@ class QuickBot():
     ithIR = 0
 
     # State Encoder
-    encTime = [0.0, 0.0]  # Last time encoders were read
     encPos = [0.0, 0.0]  # Last encoder tick position
     encVel = [0.0, 0.0]  # Last encoder tick velocity
-
-    # Encoder counting parameters
-    encCnt = 0  # Count of number times encoders have been read
-    encSumN = [0, 0]  # Sum of total encoder samples
-
-    ## Stats of encoder values while input = 0 and vel = 0
-    encZeroCntMin = 2**4  # Min number of recorded values to start calculating stats
-    encZeroMean = [0.0, 0.0]
-    encZeroVar = [0.0, 0.0]
-    encZeroCnt = [0, 0]
-    encHighCnt = [0, 0]
-    encLowCnt = [0, 0]
-    encLowCntMin = 2
 
     # Variables
     ledFlag = True
@@ -120,7 +98,6 @@ class QuickBot():
         # Initialize PWM pins: PWM.start(channel, duty, freq=2000, polarity=0)
         PWM.start(self.pwmPin[LEFT], 0)
         PWM.start(self.pwmPin[RIGHT], 0)
-
 
         # Initialize ADC
         self._adc = adc.Capture()
@@ -303,9 +280,7 @@ class QuickBot():
         for i, x in enumerate(self.irPin):
             self.irVal[i] = values[x] * 1800 / 4096.
 
-
     def readEncoderValues(self):
-        self.encCnt = self.encCnt + 1
 
         left_ticks = self._adc.encoder0_ticks
         left_speed = self._adc.encoder0_speed

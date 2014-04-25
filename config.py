@@ -10,7 +10,9 @@ MOTOR_LEFT = {
     'dir2': 'P8_16',
     'pwm' : 'P9_16',
 
-    'threshold': 2500
+    'encoder_pin'      : 0,  # AIN0
+    'encoder_threshold': 2500,
+    'encoder_delay'    : 200
 }
 
 MOTOR_RIGHT = {
@@ -18,7 +20,9 @@ MOTOR_RIGHT = {
     'dir2': 'P8_10',
     'pwm' : 'P9_14',
 
-    'threshold': 2500
+    'encoder_pin'      : 2,  # AIN2
+    'encoder_threshold': 2500,
+    'encoder_delay'    : 200
 }
 
 IR_PINS = (3, 1, 5, 6, 4)

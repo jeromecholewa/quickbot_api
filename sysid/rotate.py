@@ -11,7 +11,7 @@ from sysid.motor import Motors
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser('Capture encoder ticks and speed response for step torque input')
+    parser = argparse.ArgumentParser('Capture encoder ticks and speed response for step rotation input')
     parser.add_argument('torque', type=int, help='torque value in the range of 0-100')
     parser.add_argument('filename', type=str, help='file name for writing CSV data')
 
@@ -35,7 +35,7 @@ if __name__ == '__main__':
                      encoder.enc_speed[1]))
 
         if _ == 50:
-            motors.run(cmd.torque, cmd.torque)
+            motors.run(cmd.torque, -cmd.torque)
 
     motors.run(0, 0)
 

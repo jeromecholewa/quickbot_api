@@ -16,7 +16,7 @@ class PID:
     def feed(self, x):
         self._acc += x
 
-        out = self.Kp * x + self.Ki * self._acc + self.Kd * (x - self._x)
+        out = self.Kp * x + self.Ki * self._acc + self.Kd * (x - self._x_prev)
         self._x_prev = x
 
         return out

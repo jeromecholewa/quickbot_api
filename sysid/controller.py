@@ -36,7 +36,7 @@ if __name__ == '__main__':
     motor = ControlledMotor(config.MOTOR_LEFT['pwm'],
                             config.MOTOR_LEFT['dir1'],
                             config.MOTOR_LEFT['dir2'],
-                            10, 1)
+                            0.5, 0.05)
 
     encoder = Encoder(config)
     encoder.start()
@@ -55,6 +55,10 @@ if __name__ == '__main__':
 
         if _ == 50:
             motor.run(cmd.speed)
+	
+	actual_speed = 121000 / (encoder.enc_speed[0] + 1.0)
+	data.append( (encoder.timer, cmd.speed if _ >= 50 else 0, actual_speed) )
+	motor.feedback(actual_speed)
 
     motor.run(0)
 

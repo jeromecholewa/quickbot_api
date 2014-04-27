@@ -34,3 +34,4 @@ class Encoder:
         self.enc_ticks[1] = self._adc.encoder1_ticks
         self.enc_speed[0] = self._adc.encoder0_speed
         self.enc_speed[1] = self._adc.encoder1_speed
+        self.values = self._adc.values

@@ -2,20 +2,30 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
 
-    filename = 'sysid-carpet-70.csv'  # A=0.00026   t0=30000
-    filename = 'sysid-carpet-80.csv'  # A=0.00034   t0=32000
-    filename = 'sysid-carpet-90.csv'  # A=0x00046   t0=20000
-    filename = 'sysid-carpet-100.csv' # A=0x00066   t0=20000
+    filename = 'run-carpet-70.csv'  # A=0.00026   t0=30000
+    filename = 'run-carpet-80.csv'  # A=0.00034   t0=32000
+    filename = 'run-carpet-90.csv'  # A=0x00046   t0=20000
+    filename = 'run-carpet-100.csv' # A=0x00066   t0=20000
 
-    filename = 'sysid-wa-70.csv'      # A=0.00050   t0=17000
-    filename = 'sysid-wa-80.csv'      # A=0.00059   t0=14500
-    filename = 'sysid-wa-90.csv'      # A=0.00068   t0=11000
-    filename = 'sysid-wa-100.csv'     # A=0.00085   t0=10000
+    filename = 'run-wa-70.csv'      # A=0.00050   t0=17000
+    #filename = 'run-wa-80.csv'      # A=0.00059   t0=14500
+    #filename = 'run-wa-90.csv'      # A=0.00068   t0=11000
+    #filename = 'run-wa-100.csv'     # A=0.00085   t0=10000
 
     #filename = 'sysid-hard-70.csv'    # A=0.00035   t0=27000
     #filename = 'sysid-hard-80.csv'    # A=0.00042   t0=34000
     #filename = 'sysid-hard-90.csv'    # A=0.00056   t0=23000
     #filename = 'sysid-hard-100.csv'   # A=0.00075   t0=31000
+
+    #filename = 'rotate-wa-70.csv'
+    #filename = 'rotate-wa-80.csv'
+    #filename = 'rotate-wa-90.csv'
+    #filename = 'rotate-wa-100.csv'
+
+    #filename = 'rotate-carpet-70.csv'
+    #filename = 'rotate-carpet-80.csv'
+    #filename = 'rotate-carpet-90.csv'
+    #filename = 'rotate-carpet-100.csv'
 
     data = []
     with open(filename, 'r') as f:

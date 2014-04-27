@@ -47,18 +47,13 @@ if __name__ == '__main__':
 
         encoder.read()
 
-        data.append((encoder.timer,
-                     encoder.enc_ticks[0],
-                     encoder.enc_ticks[1],
-                     encoder.enc_speed[0],
-                     encoder.enc_speed[1]))
+        actual_speed = 121000 / (encoder.enc_speed[0] + 1.0)
+        data.append( (encoder.timer, cmd.speed if _ >= 50 else 0, actual_speed) )
 
         if _ == 50:
             motor.run(cmd.speed)
-	
-	actual_speed = 121000 / (encoder.enc_speed[0] + 1.0)
-	data.append( (encoder.timer, cmd.speed if _ >= 50 else 0, actual_speed) )
-	motor.feedback(actual_speed)
+
+        motor.feedback(actual_speed)
 
     motor.run(0)
 

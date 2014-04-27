@@ -33,9 +33,9 @@ if __name__ == '__main__':
 
     cmd = parser.parse_args()
 
-    motor = ControlledMotor(config.MOTOR_LEFT['pwm_pin'],
-                            config.MOTOR_LEFT['dir1_pin'],
-                            config.MOTOR_LEFT['dir2_pin'],
+    motor = ControlledMotor(config.MOTOR_LEFT['pwm'],
+                            config.MOTOR_LEFT['dir1'],
+                            config.MOTOR_LEFT['dir2'],
                             10, 1)
 
     encoder = Encoder(config)

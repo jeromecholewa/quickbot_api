@@ -143,24 +143,21 @@ if __name__ == '__main__':
     motor = SmartMotors(config)
 
     data = []
-    for _ in range(200):
+    reference_speed = 0
+    for _ in range(400):
         time.sleep(0.01)
 
         motor.on_timer()
 
         if _ == 50:
+            reference_speed = cmd.speed
             motor.run(cmd.speed, cmd.speed)
 
-        data.append( (motor.timer, cmd.speed if _ >= 50 else 0, motor.actual_speed[0], motor.actual_speed[1],
-            motor._left.computed_torque, motor._right.computed_torque, motor._left.torque, motor._right.torque) )
+        if _ == 200:
+            reference_speed = -cmd.speed
+            motor.run(cmd.speed, cmd.speed)
 
-    motor.run(-cmd.speed, -cmd.speed)
-
-    for _ in range(200):
-        time.sleep(0.01)
-        motor.on_timer()
-
-        data.append( (motor.timer, 0, motor.actual_speed[0], motor.actual_speed[1],
+        data.append( (motor.timer, reference_speed, motor.actual_speed[0], motor.actual_speed[1],
             motor._left.computed_torque, motor._right.computed_torque, motor._left.torque, motor._right.torque) )
 
     with open(cmd.filename, 'w') as f:

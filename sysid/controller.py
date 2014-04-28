@@ -31,6 +31,7 @@ class Helper(object):
         self.torque = self._pid.feed(self.reference_speed - self._logical_speed)
 
         ticks = self._ticks()
+        speed = self._speed()
 
         if self._last_ticks is None:
             self._last_ticks = ticks
@@ -40,19 +41,21 @@ class Helper(object):
             return
 
         if self._direction == 0:
-            if abs(self.torque > 10.0):
+            if abs(self.torque) > 10.0:
                 # will be moving soon!
                 self._direction = 1 if self.torque > 0 else -1
 
+            self.torque = 0
+
         elif self._direction == 1:
-            if self.torque < 0:
+            if self.torque < -10.0:
                 # reversing (may be active braking)
                 # prepare for the change in sign
                 self._direction = 0
 
         else:
             assert self._direction == -1
-            if self.torque > 0:
+            if self.torque > -10.0:
                 # reversing or active braking
                 self._direction = 0
 

@@ -140,7 +140,7 @@ if __name__ == '__main__':
         if _ == 50:
             motor.run(cmd.speed, cmd.speed)
 
-        data.append( (motor.timer, cmd.speed if _ >= 50 else 0, motor.actual_speed) )
+        data.append( (motor.timer, cmd.speed if _ >= 50 else 0, motor.actual_speed[0], motor.actual_speed[1]) )
 
     motor.run(0, 0)
 

@@ -12,7 +12,6 @@ from sysid.pid import PID
 class Helper(object):
 
     def __init__(self, speed_sensor, ticks_sensor, Kp=1.0, Ki=0.1):
-        self._motor = motor
         self._speed = speed_sensor
         self._ticks = ticks_sensor
 
@@ -21,6 +20,7 @@ class Helper(object):
         self.reference_speed = 0
         self._direction = 0  # direction of movement. used to infer sign of speed and ticks
 
+	self._last_ticks = None
         self._logical_ticks = 0
         self._logical_speed = 0
 
@@ -28,9 +28,13 @@ class Helper(object):
         self.reference_speed = speed
 
     def on_timer(self):
-        self.torque = self._pid(self.reference_speed - self._logical_speed)
+        self.torque = self._pid.feed(self.reference_speed - self._logical_speed)
 
         ticks = self._ticks()
+
+	if self._last_ticks is None:
+            self._last_ticks = ticks
+	    return
 
         if self._last_ticks == ticks:
             return
@@ -140,7 +144,11 @@ if __name__ == '__main__':
 
     motor.run(0, 0)
 
-    time.sleep(1)
+    for _ in range(100):
+        time.sleep(0.01)
+	motor.on_timer()
+
+        data.append( (motor.timer, 0, motor.actual_speed) )
 
     with open(cmd.filename, 'w') as f:
         for datum in data:

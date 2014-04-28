@@ -23,6 +23,7 @@ class Helper(object):
         self._last_ticks = None
         self._logical_ticks = 0
         self._logical_speed = 0
+        self._stopping = False
 
     def run(self, speed):
         self.reference_speed = speed
@@ -40,28 +41,34 @@ class Helper(object):
         if self._last_ticks == ticks:
             return
 
-        if self._direction == 0:
-            if abs(self.torque) > 10.0:
-                # will be moving soon!
-                self._direction = 1 if self.torque > 0 else -1
-
+        if self._stopping:
             self.torque = 0
-
-        elif self._direction == 1:
-            if self.torque < -10.0:
-                # reversing (may be active braking)
-                # prepare for the change in sign
+            if speed < 5.0:
+                self._stopping = False  # stopped
                 self._direction = 0
 
         else:
-            assert self._direction == -1
-            if self.torque > -10.0:
-                # reversing or active braking
-                self._direction = 0
+
+            if self._direction == 0:
+                if abs(self.torque) > 10.0:
+                    # will be moving soon!
+                    self._direction = 1 if self.torque > 0 else -1
+
+            elif self._direction == 1:
+                if self.reference_speed < -10.0:
+                    # reversing (may be active braking)
+                    # prepare for the change in sign
+                    self._stopping = True
+
+            else:
+                assert self._direction == -1
+                if self.reference_speed > -10.0:
+                    # reversing or active braking
+                    self._stopping = True
 
         delta_ticks = ticks - self._last_ticks
         self._logical_ticks += self._direction * delta_ticks
-        self._logical_speed = self._direction * self._speed()
+        self._logical_speed = self._direction * speed
 
     @property
     def ticks(self):

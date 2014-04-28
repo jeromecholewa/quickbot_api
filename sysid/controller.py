@@ -148,7 +148,7 @@ if __name__ == '__main__':
         time.sleep(0.01)
         motor.on_timer()
 
-        data.append( (motor.timer, 0, motor.actual_speed) )
+        data.append( (motor.timer, 0, motor.actual_speed[0], motor.actual_speed[1]) )
 
     with open(cmd.filename, 'w') as f:
         for datum in data:

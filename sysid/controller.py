@@ -106,7 +106,7 @@ class SmartMotors(object):
 
     @property
     def actual_speed(self):
-        return self._left._speed, self._right.speed
+        return self._left.speed, self._right.speed
 
     @property
     def timer(self):

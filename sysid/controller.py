@@ -56,7 +56,7 @@ class Helper(object):
                     self._direction = 1 if self.torque > 0 else -1
 
             elif self._direction == 1:
-                if self.reference_speed < -10.0:
+                if self.reference_speed < 10.0:
                     # reversing (may be active braking)
                     # prepare for the change in sign
                     self._stopping = True

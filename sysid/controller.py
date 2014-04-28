@@ -5,43 +5,108 @@ import argparse
 import time
 import config
 from sysid.encoder import Encoder
-from sysid.motor import Motor, Motors
+from sysid.motor import Motors
 from sysid.pid import PID
+
+
+class Helper(object):
+
+    def __init__(self, speed_sensor, ticks_sensor, Kp=1.0, Ki=0.1):
+        self._motor = motor
+        self._speed = speed_sensor
+        self._ticks = ticks_sensor
+
+        self._pid = PID(Kp, Ki)
+        self.torque = 0
+        self.reference_speed = 0
+        self._direction = 0  # direction of movement. used to infer sign of speed and ticks
+
+        self._logical_ticks = 0
+        self._logical_speed = 0
+
+    def run(self, speed):
+        self.reference_speed = speed
+
+    def on_timer(self):
+        self.torque = self._pid(self.reference_speed - self._logical_speed)
+
+        ticks = self._ticks()
+
+        if self._last_ticks == ticks:
+            return
+
+        if self._direction == 0:
+            if abs(self.torque > 10.0):
+                # will be moving soon!
+                self._direction = 1 if self.torque > 0 else -1
+
+        elif self._direction == 1:
+            if self.torque < 0:
+                # reversing (may be active braking)
+                # prepare for the change in sign
+                self._direction = 0
+
+        else:
+            assert self._direction == -1
+            if self.torque > 0:
+                # reversing or active braking
+                self._direction = 0
+
+        delta_ticks = ticks - self._last_ticks
+        self._logical_ticks += self._direction * delta_ticks
+        self._logical_speed = self._direction * self._speed()
+
+    @property
+    def ticks(self):
+        return self._logical_ticks
+
+    @property
+    def speed(self):
+        return self._logical_speed
 
 
 class SmartMotors(object):
 
-    def __init__(self, config, Kp=1.0, Ki=0.095):
+    def __init__(self, config, Kp=1.0, Ki=0.0):
         self._motors = Motors(config)
         self._encoder = Encoder(config)
         self._encoder.start()
-        self.reference_speed_left = 0
-        self.reference_speed_right = 0
-        self._pid_left = PID(Kp, Ki)
-        self._pid_right = PID(Kp, Ki)
+
+        def left_speed():
+            # ADC capture is running at 121K adc timer units per second. And captured speed is an inverse
+            # (i.e. number of timer units since the last tick was registered)
+            return 121000 / (self._encoder.enc_speed[0] + 1.0)
+
+        def left_ticks():
+            return self._encoder.enc_ticks[0]
+
+        def right_speed():
+            return 121000 / (self._encoder.enc_speed[1] + 1.0)
+
+        def right_ticks():
+            return self._encoder.enc_ticks[1]
+
+        self._left = Helper(speed_sensor=left_speed, ticks_sensor=left_ticks)
+        self._right = Helper(speed_sensor=right_speed, ticks_sensor=right_ticks)
 
     def on_timer(self):
         self._encoder.read()
 
-        actual_speed_left, actual_speed_right = self.actual_speed
-
-        torque_left = self._pid_left.feed(self.reference_speed_left - actual_speed_left)
-        torque_right = self._pid_right.feed(self.reference_speed_right - actual_speed_right)
-
-        self._motors.run(torque_left, torque_right)
+        self._left.on_timer()
+        self._right.on_timer()
+        self._motors.run(self._left.torque, self._right.torque)
 
     def run(self, speed_left, speed_right):
-        self.reference_speed_left, self.reference_speed_right = speed_left, speed_right
+        self._left.run(speed_left)
+        self._right.run(speed_right)
 
     @property
     def ticks(self):
-        return self._encoder.enc_ticks
+        return self._left.ticks, self._right.ticks
 
     @property
     def actual_speed(self):
-        # ADC capture is running at 121K adc timer units per second. And captured speed is an inverse
-        # (i.e. number of timer units since the last tick was registered)
-        return 121000 / (self._encoder.enc_speed[0] + 1.0), 121000 / (self._encoder.enc_speed[1] + 1.0)
+        return self._left._speed, self._right.speed
 
     @property
     def timer(self):

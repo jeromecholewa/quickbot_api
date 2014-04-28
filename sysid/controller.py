@@ -155,7 +155,7 @@ if __name__ == '__main__':
 
         if _ == 200:
             reference_speed = -cmd.speed
-            motor.run(cmd.speed, cmd.speed)
+            motor.run(-cmd.speed, -cmd.speed)
 
         data.append( (motor.timer, reference_speed, motor.actual_speed[0], motor.actual_speed[1],
             motor._left.computed_torque, motor._right.computed_torque, motor._left.torque, motor._right.torque) )

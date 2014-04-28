@@ -20,7 +20,7 @@ class Helper(object):
         self.reference_speed = 0
         self._direction = 0  # direction of movement. used to infer sign of speed and ticks
 
-	self._last_ticks = None
+        self._last_ticks = None
         self._logical_ticks = 0
         self._logical_speed = 0
 
@@ -32,9 +32,9 @@ class Helper(object):
 
         ticks = self._ticks()
 
-	if self._last_ticks is None:
+        if self._last_ticks is None:
             self._last_ticks = ticks
-	    return
+            return
 
         if self._last_ticks == ticks:
             return
@@ -146,7 +146,7 @@ if __name__ == '__main__':
 
     for _ in range(100):
         time.sleep(0.01)
-	motor.on_timer()
+        motor.on_timer()
 
         data.append( (motor.timer, 0, motor.actual_speed) )
 

@@ -156,7 +156,7 @@ if __name__ == '__main__':
 
     motor.run(-cmd.speed, -cmd.speed)
 
-    for _ in range(100):
+    for _ in range(200):
         time.sleep(0.01)
         motor.on_timer()
 

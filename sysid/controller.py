@@ -45,7 +45,7 @@ class Helper(object):
         if self._stopping:
             self.torque = 0
             print speed
-            if speed < 5.0:
+            if speed < 20.0:
                 self._stopping = False  # stopped
                 self._direction = 0
                 print 'STOPPED'

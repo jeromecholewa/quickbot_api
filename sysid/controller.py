@@ -154,7 +154,7 @@ if __name__ == '__main__':
         data.append( (motor.timer, cmd.speed if _ >= 50 else 0, motor.actual_speed[0], motor.actual_speed[1],
             motor._left.computed_torque, motor._right.computed_torque, motor._left.torque, motor._right.torque) )
 
-    motor.run(0, 0)
+    motor.run(-cmd.speed, -cmd.speed)
 
     for _ in range(100):
         time.sleep(0.01)

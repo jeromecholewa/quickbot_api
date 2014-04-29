@@ -105,6 +105,11 @@ class QuickBot(QB):
         qb = QuickBot(config)
         qb.start()
 
+        print 'QuickBot is ready.'
+        print 'Base IP is', qb.base_ip
+        print 'Robot IP is', qb.robot_ip
+        print 'Port is', qb.port
+
         try:
 
             cmd_buffer = ''

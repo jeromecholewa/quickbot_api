@@ -118,15 +118,9 @@ class QuickBot(QB):
                 if not line:
                     continue
 
-                mtc = re.match(r'\$([^\$\*])*?\*', line)
+                mtc = re.match(r'\$(?P<CMD>[A-Z]{3,})(?P<SET>=?)(?P<QUERY>\??)(?(2)(?P<ARGS>.*)).*\*', line)
                 if not mtc:
-                    print 'Malformed command, dropped:', line
-                    continue
-
-                command = mtc.group(1)
-                mtc = re.search(r'(?P<CMD>[A-Z]{3,})(?P<SET>=?)(?P<QUERY>\??)(?(2)(?P<ARGS>.*)).*', command)
-                if not mtc:
-                    print 'Unexpected command, ignoring:', line, command
+                    print 'Unexpected command, ignoring:', line
                     continue
 
                 if mtc.group('CMD') == 'CHECK':
@@ -138,7 +132,7 @@ class QuickBot(QB):
 
                     elif mtc.group('SET') and mtc.group('ARGS'):
                         args = mtc.group('ARGS')
-                        parts = args[1:-1].split(',')
+                        parts = args.split(',')
                         speed_left = float(parts[0].strip())
                         speed_right = float(parts[1].strip())
                         qb.set_speed(speed_left, speed_right)

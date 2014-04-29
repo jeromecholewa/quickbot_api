@@ -23,7 +23,6 @@ class BotController(object):
     def __init__(self, config, Kp=1.0, Ki=0.0):
         self._motors = Motors(config)
         self._encoder = Encoder(config)
-        self._encoder.start()
 
         def left_speed():
             # ADC capture is running at 121K adc timer units per second. And captured speed is an inverse
@@ -41,6 +40,14 @@ class BotController(object):
 
         self._left = Helper(speed_sensor=left_speed, ticks_sensor=left_ticks)
         self._right = Helper(speed_sensor=right_speed, ticks_sensor=right_ticks)
+
+    def start(self):
+        self._encoder.start()
+
+    def stop(self):
+        self._motors.run(0, 0)
+        self._motors.close()
+        self._encoder.stop()
 
     def on_timer(self):
         self._encoder.read()
@@ -147,29 +154,30 @@ if __name__ == '__main__':
 
     cmd = parser.parse_args()
 
-    motor = BotController(config)
+    bot = BotController(config)
+    bot.start()
 
     data = []
     reference_speed = 0
     for _ in range(400):
         time.sleep(0.01)
 
-        motor.on_timer()
+        bot.on_timer()
 
         if _ == 50:
             reference_speed = cmd.speed
-            motor.run(cmd.speed, cmd.speed)
+            bot.run(cmd.speed, cmd.speed)
 
         if _ == 200:
             reference_speed = -cmd.speed
-            motor.run(-cmd.speed, -cmd.speed)
+            bot.run(-cmd.speed, -cmd.speed)
 
         if _ == 350:
             reference_speed = 0
-            motor.run(0, 0)
+            bot.run(0, 0)
 
-        data.append( (motor.timer, reference_speed, motor.actual_speed[0], motor.actual_speed[1],
-            motor._left.computed_torque, motor._right.computed_torque, motor._left.torque, motor._right.torque) )
+        data.append( (bot.timer, reference_speed, bot.actual_speed[0], bot.actual_speed[1],
+            bot._left.computed_torque, bot._right.computed_torque, bot._left.torque, bot._right.torque) )
 
     with open(cmd.filename, 'w') as f:
         for datum in data:

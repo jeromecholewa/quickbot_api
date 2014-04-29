@@ -27,6 +27,10 @@ if __name__ == '__main__':
     #filename = 'rotate-carpet-90.csv'
     #filename = 'rotate-carpet-100.csv'
 
+    filename = 'reverse-carpet-60.csv'
+    #filename = 'reverse-carpet-80.csv'
+    filename = 'reverse-carpet-100.csv'
+
     data = []
     with open(filename, 'r') as f:
         for line in f:
@@ -49,9 +53,11 @@ if __name__ == '__main__':
     plt.title('Ticks')
 
     plt.subplot(2, 1, 2)
-    plt.plot(timer, [1.0 / (x + 0.0001) for x in speed_left])
-    plt.plot(timer, [1.0 / (x + 0.0001) for x in speed_right], color='r')
+    plt.plot(timer, [121000.0 / (x + 1) for x in speed_left])
+    plt.plot(timer, [121000.0 / (x + 1) for x in speed_right], color='r')
     plt.plot([timer[50]], [0.0001], 'ob')
     plt.title('Speed')
+
+    print timer[250], timer[1250]
 
     plt.show()

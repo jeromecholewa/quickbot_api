@@ -23,6 +23,14 @@ class Motor:
         PWM.start(self._pwm_pin, 0)
         PWM.set_duty_cycle(self._pwm_pin, 0)
 
+    def close(self):
+        PWM.set_duty_cycle(self._pwm_pin, 0)
+
+    @classmethod
+    def cleanup(cls):
+        PWM.cleanup()
+        GPIO.cleanup()
+
     def run(self, speed):
         """
         Makes motor to run (or stop).
@@ -70,3 +78,8 @@ class Motors:
 
         self._motor_left.run(speed_left)
         self._motor_right.run(speed_right)
+
+    def close(self):
+        self._motor_left.close()
+        self._motor_right.close()
+        Motor.cleanup()

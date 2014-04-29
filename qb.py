@@ -109,7 +109,7 @@ class QuickBot(QB):
 
             cmd_buffer = ''
             while True:
-                line = self.recv_line()
+                line = qb.recv_line()
                 if not line:
                     continue
 

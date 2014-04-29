@@ -12,7 +12,7 @@ from sysid.pid import PID
 class Helper(object):
 
     DT = 0.05
-    ALPHA = 3.0
+    ALPHA = 1.0
 
     def __init__(self, speed_sensor, ticks_sensor, Kp=1.0, Ki=0.1):
         self._speed = speed_sensor
@@ -49,7 +49,7 @@ class Helper(object):
                                             + self.ALPHA * (speed - self._predicted_speed))
         if old_predicted_speed * self._predicted_speed < 0 or 0 < self._predicted_speed < 1.0:
             # predicted speed changed sign
-            self._direction = -self._direction
+            self._direction = 0
             self._logical_speed = 0
             print 'speed changed sign at:', ticks
 

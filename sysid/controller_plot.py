@@ -2,13 +2,19 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
 
-    #filename = 'controller-wa-20.csv'
+    filename = 'controller-wa-20.csv'
     filename = 'controller-wa-40.csv'
     filename = 'controller-wa-60.csv'
     filename = 'controller-wa-80.csv'
     #filename = 'controller-wa-100.csv'
-    #filename = 'controller-wa-120.csv'
+    filename = 'controller-wa-120.csv'
     #filename = 'controller-wa-150.csv'
+
+    filename = 'controller-carpet-10.csv'
+    #filename = 'controller-carpet-20.csv'
+    #filename = 'controller-carpet-30.csv'
+    filename = 'controller-carpet-60.csv'
+    #filename = 'controller-carpet-80.csv'
 
     data = []
     with open(filename, 'r') as f:
@@ -21,7 +27,7 @@ if __name__ == '__main__':
     control = [d[3] for d in data]
 
     DT = 0.05
-    ALPHA = 2.0
+    ALPHA = 1.0
 
     pspeed = []
     prev_s = None

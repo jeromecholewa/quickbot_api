@@ -104,7 +104,7 @@ class Helper(object):
         self.reference_speed = speed
 
     def on_timer(self):
-        self.torque = self._pid.feed(self.reference_speed - self._logical_speed)
+        self.torque = self._pid(self.reference_speed - self._logical_speed)
         self.computed_torque = self.torque
 
         ticks = self._ticks()

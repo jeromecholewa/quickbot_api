@@ -11,6 +11,9 @@ from sysid.pid import PID
 
 class Helper(object):
 
+    DT = 0.05
+    ALPHA = 3.0
+
     def __init__(self, speed_sensor, ticks_sensor, Kp=1.0, Ki=0.1):
         self._speed = speed_sensor
         self._ticks = ticks_sensor
@@ -41,33 +44,17 @@ class Helper(object):
             self._last_ticks = ticks
             return
 
-        if self._last_ticks == ticks:
-            delta = 0.01 * (self.torque * self._direction - 10.0 * self._predicted_speed)
-            if self._predicted_speed * (delta + self._predicted_speed) < 0:
-                # predicted speed changed sign
-                self._direction = -self._direction
-                self._logical_speed = 0
-                print 'speed changed sign at:', ticks
+        old_predicted_speed = self._predicted_speed
+        self._predicted_speed += self.DT * (self.torque * self._direction - self._predicted_speed
+                                            + self.ALPHA * (speed - self._predicted_speed))
+        if old_predicted_speed * self._predicted_speed < 0 or 0 < self._predicted_speed < 1.0:
+            # predicted speed changed sign
+            self._direction = -self._direction
+            self._logical_speed = 0
+            print 'speed changed sign at:', ticks
 
-            self._predicted_speed += delta
-            return
-
-        self._predicted_speed = speed
-
-        if self._stopping:
-            self.torque = 0
-            print speed
-            if speed < 20.0:
-                self._stopping = False  # stopped
-                self._direction = 0
-                print 'STOPPED'
-
-        else:
-
-            if self._direction == 0:
-                if abs(self.torque) > 10.0:
-                    # will be moving soon!
-                    self._direction = 1 if self.torque > 0 else -1
+        elif self._direction == 0 and self._predicted_speed >= 1.0:
+            self._direction = 1 if self.torque >= 0 else -1
 
         delta_ticks = ticks - self._last_ticks
         self._logical_ticks += self._direction * delta_ticks

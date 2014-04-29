@@ -14,13 +14,10 @@ class Encoder:
         self._adc.encoder0_delay = config.MOTOR_LEFT['encoder_delay']
         self._adc.encoder1_delay = config.MOTOR_RIGHT['encoder_delay']
 
-        self._last_ticks = (0, 0)  # remember last tick reading (to compute delta)
-        self._pwm_ema = [0, 0]  # models actual (inertial) speed by EMA-averaging pwm
-        self._ema_period = config.PWM_EMA_PERIOD  # EMA-averaging period (1.0 means no averaging)
-
         self.timer = 0
         self.enc_speed = [0, 0]
         self.enc_ticks = [0, 0]
+        self.values = (0, 0, 0, 0, 0)
 
     def start(self):
         self._adc.start()

@@ -30,8 +30,7 @@ if __name__ == '__main__':
     for r, s in zip(reference, speed):
         old_speed = predicted_speed
         predicted_speed += DT * (r * direction - predicted_speed + ALPHA * (abs(s) - predicted_speed))
-        if old_speed * predicted_speed < 0 or 0 < predicted_speed < 1.0:
-            print 'sign changed at', s
+        if direction != 0 and (old_speed * predicted_speed < 0 or 0 < predicted_speed < 1.0):
             direction = 0
             predicted_speed = 0
         elif direction == 0 and predicted_speed >= 1.0:

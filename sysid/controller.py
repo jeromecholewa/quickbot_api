@@ -10,6 +10,12 @@ from sysid.pid import PID
 
 
 class Helper(object):
+    """
+    Models speed dynamics to keep track of speed crossing zero - thus inferring speed and tick signs.
+
+    Facades the real encoder values (unsigned) and presents to the user signed readings of
+    ticks and speed.
+    """
 
     DT = 0.05
     ALPHA = 1.0
@@ -22,7 +28,7 @@ class Helper(object):
         self.torque = 0
         self.computed_torque = 0
         self.reference_speed = 0
-        self._direction = 0  # direction of movement. used to infer sign of speed and ticks
+        self._direction = 0  # direction of movement (inferred)
 
         self._last_ticks = None
         self._logical_ticks = 0
@@ -145,6 +151,10 @@ if __name__ == '__main__':
         if _ == 200:
             reference_speed = -cmd.speed
             motor.run(-cmd.speed, -cmd.speed)
+
+        if _ == 350:
+            reference_speed = 0
+            motor.run(0, 0)
 
         data.append( (motor.timer, reference_speed, motor.actual_speed[0], motor.actual_speed[1],
             motor._left.computed_torque, motor._right.computed_torque, motor._left.torque, motor._right.torque) )

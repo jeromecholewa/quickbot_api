@@ -4,7 +4,7 @@ Controller that stabilises wheel speed across all surfaces (carpet, hardwood, as
 import argparse
 import time
 import config
-from sysid.sensors import Encoder, Sensors
+from sysid.sensors import Sensors
 from sysid.motor import Motors
 from sysid.pid import PID
 

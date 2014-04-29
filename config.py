@@ -11,8 +11,8 @@ MOTOR_LEFT = {
     'pwm' : 'P9_16',
 
     'encoder_pin'      : 0,  # AIN0
-    'encoder_threshold': 2500,
-    'encoder_delay'    : 200
+    'encoder_threshold': 3000,
+    'encoder_delay'    : 50
 }
 
 MOTOR_RIGHT = {
@@ -22,15 +22,10 @@ MOTOR_RIGHT = {
 
     'encoder_pin'      : 2,  # AIN2
     'encoder_threshold': 2500,
-    'encoder_delay'    : 200
+    'encoder_delay'    : 50
 }
 
 IR_PINS = (3, 1, 5, 6, 4)
 
-# Bot speed is roughly estimated from PWM signal by applying EMA-averaging over
-# this period. For example, if PWM goes from zero to 100, speed does not immediately
-# catch up, because of the inertia. EMA models this inertia. This estimate is used
-# for suppressing encoder readings when bot is not moving (or some noise may result in
-# bogus readings). Time value of one period is 0.005 sec. Therefore, set period to 100
-# to introduce 0.5sec inertia lag.
-PWM_EMA_PERIOD = 100.0
+EMA_POW = 11  # 2**EMA_POW is the averaging time (in ADC timer ticks)
+              # of IR readings. ADC timer runs at about 120000 ticks per second

@@ -126,7 +126,7 @@ class QuickBot(QB):
                 command = mtc.group(1)
                 mtc = re.search(r'(?P<CMD>[A-Z]{3,})(?P<SET>=?)(?P<QUERY>\??)(?(2)(?P<ARGS>.*)).*', command)
                 if not mtc:
-                    print 'Unexpected command, ignoring:', line
+                    print 'Unexpected command, ignoring:', line, command
                     continue
 
                 if mtc.group('CMD') == 'CHECK':

@@ -9,12 +9,76 @@ from sysid.motor import Motors
 from sysid.pid import PID
 
 
+class BotController(object):
+    """
+    This controller uses PID in a closed-loop to stabilise bot speed regardless
+    of surface it is on (hard, carpet, asphalt).
+
+    It also presents signed ticks and signed speed readings to the user, courtesy of
+    Helper class (see above).
+
+    This class expects that its on_timer() method is called at 100Hz frequency.
+    """
+
+    def __init__(self, config, Kp=1.0, Ki=0.0):
+        self._motors = Motors(config)
+        self._encoder = Encoder(config)
+        self._encoder.start()
+
+        def left_speed():
+            # ADC capture is running at 121K adc timer units per second. And captured speed is an inverse
+            # (i.e. number of timer units since the last tick was registered)
+            return 121000 / (self._encoder.enc_speed[0] + 1.0)
+
+        def left_ticks():
+            return self._encoder.enc_ticks[0]
+
+        def right_speed():
+            return 121000 / (self._encoder.enc_speed[1] + 1.0)
+
+        def right_ticks():
+            return self._encoder.enc_ticks[1]
+
+        self._left = Helper(speed_sensor=left_speed, ticks_sensor=left_ticks)
+        self._right = Helper(speed_sensor=right_speed, ticks_sensor=right_ticks)
+
+    def on_timer(self):
+        self._encoder.read()
+
+        self._left.on_timer()
+        self._right.on_timer()
+        self._motors.run(self._left.torque, self._right.torque)
+
+    def run(self, speed_left, speed_right):
+        self._left.run(speed_left)
+        self._right.run(speed_right)
+
+    @property
+    def ticks(self):
+        return self._left.ticks, self._right.ticks
+
+    @property
+    def actual_speed(self):
+        return self._left.speed, self._right.speed
+
+    @property
+    def timer(self):
+        return self._encoder.timer
+
+    @property
+    def values(self):
+        return self._encoder.values
+
+
 class Helper(object):
     """
     Models speed dynamics to keep track of speed crossing zero - thus inferring speed and tick signs.
 
     Facades the real encoder values (unsigned) and presents to the user signed readings of
     ticks and speed.
+
+    This class expects that its on_timer() method is called at 100Hz frequency (dynamical constants were
+    fit using this assumption).
     """
 
     DT = 0.05
@@ -75,58 +139,6 @@ class Helper(object):
         return self._logical_speed
 
 
-class SmartMotors(object):
-
-    def __init__(self, config, Kp=1.0, Ki=0.0):
-        self._motors = Motors(config)
-        self._encoder = Encoder(config)
-        self._encoder.start()
-
-        def left_speed():
-            # ADC capture is running at 121K adc timer units per second. And captured speed is an inverse
-            # (i.e. number of timer units since the last tick was registered)
-            return 121000 / (self._encoder.enc_speed[0] + 1.0)
-
-        def left_ticks():
-            return self._encoder.enc_ticks[0]
-
-        def right_speed():
-            return 121000 / (self._encoder.enc_speed[1] + 1.0)
-
-        def right_ticks():
-            return self._encoder.enc_ticks[1]
-
-        self._left = Helper(speed_sensor=left_speed, ticks_sensor=left_ticks)
-        self._right = Helper(speed_sensor=right_speed, ticks_sensor=right_ticks)
-
-    def on_timer(self):
-        self._encoder.read()
-
-        self._left.on_timer()
-        self._right.on_timer()
-        self._motors.run(self._left.torque, self._right.torque)
-
-    def run(self, speed_left, speed_right):
-        self._left.run(speed_left)
-        self._right.run(speed_right)
-
-    @property
-    def ticks(self):
-        return self._left.ticks, self._right.ticks
-
-    @property
-    def actual_speed(self):
-        return self._left.speed, self._right.speed
-
-    @property
-    def timer(self):
-        return self._encoder.timer
-
-    @property
-    def values(self):
-        return self._encoder.values
-
-
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser('Capture encoder ticks and speed response for step rotation input')
@@ -135,7 +147,7 @@ if __name__ == '__main__':
 
     cmd = parser.parse_args()
 
-    motor = SmartMotors(config)
+    motor = BotController(config)
 
     data = []
     reference_speed = 0

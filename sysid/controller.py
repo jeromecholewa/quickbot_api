@@ -17,6 +17,7 @@ class Helper(object):
 
         self._pid = PID(Kp, Ki)
         self.torque = 0
+        self.computed_torque = 0
         self.reference_speed = 0
         self._direction = 0  # direction of movement. used to infer sign of speed and ticks
 
@@ -24,6 +25,7 @@ class Helper(object):
         self._logical_ticks = 0
         self._logical_speed = 0
         self._stopping = False
+        self._predicted_speed = 0
 
     def run(self, speed):
         self.reference_speed = speed
@@ -40,7 +42,17 @@ class Helper(object):
             return
 
         if self._last_ticks == ticks:
+            delta = 0.01 * (self.torque * self._direction - 10.0 * self._predicted_speed)
+            if self._predicted_speed * (delta + self._predicted_speed) < 0:
+                # predicted speed changed sign
+                self._direction = -self._direction
+                self._logical_speed = 0
+                print 'speed changed sign at:', ticks
+
+            self._predicted_speed += delta
             return
+
+        self._predicted_speed = speed
 
         if self._stopping:
             self.torque = 0
@@ -56,18 +68,6 @@ class Helper(object):
                 if abs(self.torque) > 10.0:
                     # will be moving soon!
                     self._direction = 1 if self.torque > 0 else -1
-
-            elif self._direction == 1:
-                if self.reference_speed < 10.0:
-                    # reversing (may be active braking)
-                    # prepare for the change in sign
-                    self._stopping = True
-
-            else:
-                assert self._direction == -1
-                if self.reference_speed > -10.0:
-                    # reversing or active braking
-                    self._stopping = True
 
         delta_ticks = ticks - self._last_ticks
         self._logical_ticks += self._direction * delta_ticks

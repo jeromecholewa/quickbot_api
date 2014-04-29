@@ -4,7 +4,7 @@ Controller that stabilises wheel speed across all surfaces (carpet, hardwood, as
 import argparse
 import time
 import config
-from sysid.encoder import Encoder
+from sysid.sensors import Encoder, Sensors
 from sysid.motor import Motors
 from sysid.pid import PID
 
@@ -15,42 +15,40 @@ class BotController(object):
     of surface it is on (hard, carpet, asphalt).
 
     It also presents signed ticks and signed speed readings to the user, courtesy of
-    Helper class (see above).
+    Helper class (see below).
 
     This class expects that its on_timer() method is called at 100Hz frequency.
     """
 
-    def __init__(self, config, Kp=1.0, Ki=0.0):
+    def __init__(self, config):
         self._motors = Motors(config)
-        self._encoder = Encoder(config)
+        self._sensors = Sensors(config)
 
         def left_speed():
-            # ADC capture is running at 121K adc timer units per second. And captured speed is an inverse
-            # (i.e. number of timer units since the last tick was registered)
-            return 121000 / (self._encoder.enc_speed[0] + 1.0)
-
-        def left_ticks():
-            return self._encoder.enc_ticks[0]
+            return self._sensors.speed_left
 
         def right_speed():
-            return 121000 / (self._encoder.enc_speed[1] + 1.0)
+            return self._sensors.speed_right
+
+        def left_ticks():
+            return self._sensors.enc_ticks_left
 
         def right_ticks():
-            return self._encoder.enc_ticks[1]
+            return self._sensors.enc_ticks_left
 
         self._left = Helper(speed_sensor=left_speed, ticks_sensor=left_ticks)
         self._right = Helper(speed_sensor=right_speed, ticks_sensor=right_ticks)
 
     def start(self):
-        self._encoder.start()
+        self._sensors.start()
 
     def stop(self):
         self._motors.run(0, 0)
         self._motors.close()
-        self._encoder.stop()
+        self._sensors.stop()
 
     def on_timer(self):
-        self._encoder.read()
+        self._sensors.read()
 
         self._left.on_timer()
         self._right.on_timer()
@@ -70,11 +68,11 @@ class BotController(object):
 
     @property
     def timer(self):
-        return self._encoder.timer
+        return self._sensors.timer
 
     @property
     def values(self):
-        return self._encoder.values
+        return self._sensors.values
 
 
 class Helper(object):

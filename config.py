@@ -25,7 +25,7 @@ MOTOR_RIGHT = {
     'encoder_delay'    : 50
 }
 
-IR_PINS = (3, 1, 5, 6, 4)
+IR_PINS = (3, 1, 5, 6, 4)  # AIN3, AIN1, AIN5, AIN6, AIN4
 
 EMA_POW = 11  # 2**EMA_POW is the averaging time (in ADC timer ticks)
               # of IR readings. ADC timer runs at about 120000 ticks per second

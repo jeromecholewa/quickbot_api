@@ -47,11 +47,11 @@ class Helper(object):
         old_predicted_speed = self._predicted_speed
         self._predicted_speed += self.DT * (self.torque * self._direction - self._predicted_speed
                                             + self.ALPHA * (speed - self._predicted_speed))
-        if old_predicted_speed * self._predicted_speed < 0 or 0 < self._predicted_speed < 1.0:
+        if self._direction != 0 and (old_predicted_speed * self._predicted_speed < 0
+                                     or 0 < self._predicted_speed < 1.0):
             # predicted speed changed sign
             self._direction = 0
             self._logical_speed = 0
-            print 'speed changed sign at:', ticks
 
         elif self._direction == 0 and self._predicted_speed >= 1.0:
             self._direction = 1 if self.torque >= 0 else -1

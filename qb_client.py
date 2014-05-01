@@ -45,6 +45,10 @@ class QBClient:
         reply = self._send_recv('$IRVAL?*\n')
         return parse_tuple(reply)
 
+    def get_ir_distances(self):
+        reply = self._send_recv('$IRDIST?*\n')
+        return parse_tuple(reply)
+
     def _send_recv(self, message, expect_reply=True):
 
         for _ in range(3):  # re-try count

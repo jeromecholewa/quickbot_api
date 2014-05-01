@@ -1,6 +1,7 @@
 import time
 import re
 import socket
+from fit import distance
 from sysid.controller import BotController
 
 
@@ -26,6 +27,7 @@ class QB(object):
         self._bot = BotController(config)
         self._ticks_origin_left = 0
         self._ticks_origin_right = 0
+        self._ir_calibration = config.IR_CALIBRATION
 
     def start(self):
         self._bot.start()
@@ -41,6 +43,11 @@ class QB(object):
 
     def get_ir(self):
         return self._bot.values
+
+    def get_ir_distances(self):
+        return tuple(
+            distance(c[0], c[1], c[2], v) for v, c in zip(self._bot.values, self._ir_calibration)
+        )
 
     def get_ticks(self):
         ticks_left, ticks_right = self._bot.ticks
@@ -143,6 +150,10 @@ class QuickBot(QB):
                 elif mtc.group('CMD') == 'IRVAL':
                     if mtc.group('QUERY'):
                         qb.send_line('[%s, %s, %s, %s, %s]\n' % qb.get_ir())
+
+                elif mtc.group('CMD') == 'IRDIST':
+                    if mtc.group('QUERY'):
+                        qb.send_line('[%s, %s, %s, %s, %s]\n' % qb.get_ir_distances())
 
                 elif mtc.group('CMD') == 'ENVAL':
                     if mtc.group('QUERY'):

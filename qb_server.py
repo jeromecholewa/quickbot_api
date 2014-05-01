@@ -81,6 +81,10 @@ class QBServer(QB):
                     if mtc.group('QUERY'):
                         qb.send_line('[%s, %s, %s, %s, %s]\n' % qb.get_ir())
 
+                elif mtc.group('CMD') == 'IRDIST':
+                    if mtc.group('QUERY'):
+                        qb.send_line('[%s, %s, %s, %s, %s]\n' % qb.get_ir_distances())
+
                 elif mtc.group('CMD') == 'ENVAL':
                     if mtc.group('QUERY'):
                         qb.send_line('[%s, %s]\n' % qb.get_ticks())

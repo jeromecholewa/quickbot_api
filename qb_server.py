@@ -1,8 +1,7 @@
-import time
 import re
 import socket
+
 from qb import QB
-from sysid.controller import BotController
 
 
 class QBServer(QB):

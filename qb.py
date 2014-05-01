@@ -1,8 +1,9 @@
 import time
 import re
 import socket
-from fit import distance
-from sysid.controller import BotController
+
+from tools.fit import distance
+from robot.controller import BotController
 
 
 class QB(object):

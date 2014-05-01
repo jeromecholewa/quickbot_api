@@ -90,7 +90,21 @@ def fit(d, v):
 def distance(alpha, beta, gamma, v):
     """
     Computes distance from voltage measurement
+
+    Note that outside of the "good" voltage region distance formula may behave
+    incorrectly, even reporting small or negative distances for very small voltages.
+    Therefore we postulate that for voltages smaller than V* we just return arbitrarily
+    large distance of 100inches. I will choose V* to be such that distance is 100inches
+    when at the "good" side of the curve (approaching from large v)
+
+        distance(v) = 100
+
+        v = (beta + 100 * alpha) / (100 + gamma)
     """
+
+    if v < (beta + 100 * alpha) / (100 + gamma):
+        return 100
+
     return (beta - gamma * v) / (v - alpha)
 
 
@@ -128,3 +142,14 @@ if __name__ == '__main__':
 
     for sensor in range(5):
         print fit([3, 6, 12], [v3[sensor], v6[sensor], v12[sensor]])
+
+    sensor = 1
+    alpha, beta, gamma = fit([3, 6, 12], [v3[sensor], v6[sensor], v12[sensor]])
+    dd = []
+    for vv in range(0, 4000):
+        dd.append(distance(alpha, beta, gamma, vv))
+
+    import matplotlib.pyplot as plt
+
+    plt.plot(dd)
+    plt.show()

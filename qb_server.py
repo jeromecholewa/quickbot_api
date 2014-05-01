@@ -51,11 +51,10 @@ class QBServer(QB):
 
             cmd_buffer = ''
             while True:
+                qb.on_timer()
                 line = qb.recv_line()
                 if not line:
                     continue
-
-                qb.on_timer()
 
                 mtc = re.match(r'\$(?P<CMD>[A-Z]{3,})(?P<SET>=?)(?P<QUERY>\??)(?(2)(?P<ARGS>.*)).*\*', line)
                 if not mtc:

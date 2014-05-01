@@ -46,11 +46,11 @@ class GoStraightController:
 
     obstacle = Signal()
 
-    def __init__(self, Kp=1.0, Ki=0.03, Kd=0.0, speed=40):
+    def __init__(self, Kp=1.0, Ki=0.03, Kd=0.0, speed=50):
         self._speed = speed
 
     def execute(self, qb):
-        if qb.get_ir_distances()[2] < 7:  # head-on obstacle!
+        if min(qb.get_ir_distances()[2:4]) < 7:  # head-on obstacle!
             qb.set_speed(0, 0)  # stop!
             self.obstacle.emit()
 
@@ -81,8 +81,8 @@ class AvoidCollisionController:
         # backtrack to the tick position
         self._timer += 1
 
-        if self._timer < 10:
-            qb.set_speed(-60, -60)
+        if self._timer < 15:
+            qb.set_speed(-50, -50)
 
         else:
             qb.set_speed(0, 0)
@@ -103,18 +103,18 @@ class FindNewDirectionController:
         self._timer += 1
 
         if self._timer < 10:
-            if qb.get_ir_distances()[2] > 10:
+            if min(qb.get_ir_distances()[2:4]) > 15:
                 qb.set_speed(0, 0)
                 self.no_obstacle.emit()
                 return
 
-        elif self._timer > 13:
+        elif self._timer > 20:
             self._timer = 0
             qb.set_speed(0, 0)
             return
 
         else:
-            qb.set_speed(50, -50)
+            qb.set_speed(60, -60)
 
     def reset(self):
         self._timer = 0
@@ -164,10 +164,12 @@ if __name__ == '__main__':
 
     with QBClient.connect(config.ROBOT_IP, config.BASE_IP, config.PORT) as qb:
 
-        for _ in range(1500):
-            time.sleep(0.05)
+        for _ in range(3000):
+            time.sleep(0.02)
 
             supervisor.execute(qb)
+
+            print qb.get_ir_distances()
 
 
         # stop motors

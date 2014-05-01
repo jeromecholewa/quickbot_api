@@ -1,6 +1,7 @@
 import contextlib
 import re
 import socket
+import time
 
 
 class QBClient:
@@ -91,4 +92,5 @@ if __name__ == '__main__':
     with QBClient.connect(config.ROBOT_IP, config.BASE_IP, config.PORT) as qb:
 
         for _ in range(1000):
-            print qb.get_ir()
+            time.sleep(0.1)
+            print qb.get_ir_distances()

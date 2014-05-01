@@ -178,4 +178,7 @@ class QuickBot(QB):
 if __name__ == '__main__':
     import config
 
-    QuickBot.run(config)
+    def behavior(qb):
+        print qb.get_ticks(), qb.get_ir()
+
+    QB.run(config, behavior)

@@ -46,7 +46,7 @@ class GoStraightController:
 
     obstacle = Signal()
 
-    def __init__(self, Kp=1.0, Ki=0.03, Kd=0.0, speed=30):
+    def __init__(self, Kp=1.0, Ki=0.03, Kd=0.0, speed=40):
         self._speed = speed
 
     def execute(self, qb):

@@ -66,6 +66,8 @@ class QB(object):
         qb = QB(config)
         try:
 
+            qb.start()
+
             while True:
                 time.sleep(0.01)
                 qb.on_timer()

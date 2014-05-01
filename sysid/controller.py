@@ -89,11 +89,11 @@ class Helper(object):
     DT = 0.05
     ALPHA = 1.0
 
-    def __init__(self, speed_sensor, ticks_sensor, Kp=1.0, Ki=0.1):
+    def __init__(self, speed_sensor, ticks_sensor, Kp=1.0, Ki=0.1, i_saturation_limit=30.0):
         self._speed = speed_sensor
         self._ticks = ticks_sensor
 
-        self._pid = PID(Kp, Ki)
+        self._pid = PID(Kp, Ki, i_saturation_limit=i_saturation_limit)
         self.torque = 0
         self.computed_torque = 0
         self.reference_speed = 0

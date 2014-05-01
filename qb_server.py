@@ -106,7 +106,4 @@ class QBServer(QB):
 if __name__ == '__main__':
     import config
 
-    def behavior(qb):
-        print qb.get_ticks()
-
-    QB.run(config, behavior)
+    QBServer.run(config)

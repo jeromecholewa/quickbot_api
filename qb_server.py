@@ -55,6 +55,8 @@ class QBServer(QB):
                 if not line:
                     continue
 
+                qb.on_timer()
+
                 mtc = re.match(r'\$(?P<CMD>[A-Z]{3,})(?P<SET>=?)(?P<QUERY>\??)(?(2)(?P<ARGS>.*)).*\*', line)
                 if not mtc:
                     print 'Unexpected command, ignoring:', line

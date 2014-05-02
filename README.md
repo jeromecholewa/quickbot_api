@@ -81,5 +81,43 @@ Simple behavior switches between three controllers:
 3. "Find clear direction" controller - robot rotates on a spot, trying to find a "clear" direction. When
    found, switches to "Go straight".
 
+## Programming API
+
+### QB(config)
+Constructs new QB object. Takes a single parameter - configuration file.
+
+### QB.start()
+Initialises all sub-systems. Call this once before entering main loop.
+
+### QB.on_timer()
+Performs necessary periodic tasks (mostly reading sensors and maintaining encoder sign). You must call
+this function at 100Hz (every 0.01 sec) in the main loop.
+
+### QB.stop()
+Cleanup of all resources.
+
+### QB.set_speed(speed_left, speed_right)
+Sets robot speed. The speed parameter is a signed float value that is desired speed of the corresponding wheel.
+
+Speed is measured in ticks/sec. Since there are 16 encoder teeth, the speed is scaled by 16 desired number of rotations
+per second. Reasonable speed range is 20-120. Range between -20 and +20 is unstable (robot physically can not move that
+slow because of the mechanical limitations).
+
+### QB.get_speed()
+Returns tuple of _actual_ speed readings, not the values set with `QB.set_speed`.
+
+### QB.get_ticks()
+Returns tuple of the wheel encoder ticks. These are signed values.
+
+### QB.reset_ticks()
+Resets ticks values to zero.
+
+### QB.get_ir()
+Returns 5-tuple of raw IR readings
+
+### QB.get_ir_distances()
+Returns 5-tuple of IR readings converted to distance (in inches)
+
+
 ## License
 MIT

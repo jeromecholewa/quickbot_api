@@ -133,15 +133,10 @@ if __name__ == '__main__':
     ## at 12in
     v12 = [339, 352, 87, 148, 120]
 
+    print 'IR_CALIBRATION=['
     for sensor in range(5):
-
-        alpha, beta, gamma = fit([3, 6, 12], [v3[sensor], v6[sensor], v12[sensor]])
-        for vv in [0, 10, 100, 200, 300, 400, 700, 900, 1300, 1800, 4000]:
-            print '+++\t', vv, distance(alpha, beta, gamma, vv)
-        print
-
-    for sensor in range(5):
-        print fit([3, 6, 12], [v3[sensor], v6[sensor], v12[sensor]])
+        print '\t', fit([3, 6, 12], [v3[sensor], v6[sensor], v12[sensor]]), ','
+    print ']'
 
     sensor = 1
     alpha, beta, gamma = fit([3, 6, 12], [v3[sensor], v6[sensor], v12[sensor]])

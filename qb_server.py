@@ -48,7 +48,6 @@ class QBServer(QB):
 
         try:
 
-            cmd_buffer = ''
             while True:
                 qb.on_timer()
                 line = qb.recv_line()

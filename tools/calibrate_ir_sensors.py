@@ -14,7 +14,6 @@ if __name__ == '__main__':
 
     stat = collections.defaultdict(list)
 
-    print '\x08'
     for _ in range(1000):
         time.sleep(0.005)
         values = adc.values
@@ -34,4 +33,4 @@ if __name__ == '__main__':
         min_ = min(stat[i])
         max_ = max(stat[i])
 
-        print '#%d: RANGE: %4.2lf -- %4.2lf, MEAN: %4.2lf' % i
+        print '#%d: RANGE: %4.2lf -- %4.2lf, MEAN: %4.2lf' % (i, min_, max_, mean)

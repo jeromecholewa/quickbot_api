@@ -12,9 +12,9 @@ and IR sensors. Example code implements a simple "intelligent" behavior.
 QB class encapsulates the API. This class can only be used at the robot side (it operates motors and reads
 sensors).
 
-QBServer is used to control robot from base station via networking (UDP). Communication protocol is
-compatible with the one used in the class: http://github.com/o-botics/quickbot_bbb . This means that you should be
-able to run class MatLab code. This class can be used at the robot side only.
+QBServer - run this code on the robot side to delegate control to the base station. Communication protocol is
+compatible with the one used in the class, see http://github.com/o-botics/quickbot_bbb . This means that you should be
+able to run MatLab code developed in the class. This code can be used at the robot side only.
 
 QBClient implements the QB API by sending commands to QBServer over UDP protocol. This class is meant to
 be used at the base station to control robot remotely. Since API is identical to the QB one, you can develop
@@ -29,6 +29,7 @@ run autonomously.
 2. Unlike original robot, speed is stabilized with PID controller. This removes the need to manually adjust
 torque - robot runs reliably on any surface: hardwood, carpet, asphalt.
 
+3. Uses predictor/corrector to detect tick sign change (thus emulates quadrature encoder functionality in software).
 
 ## Configuration
 
@@ -77,7 +78,7 @@ Simple behavior switches between three controllers:
 1. "Go straight" controller - robot travels straight until it "sees" an obstacle. Then it yields to
 2. "Avoid collision" controller - robot just "jumps" back a little (this helps avoiding it getting stuck
    when too close to a wall). Then it switches to
-3. "Find clear direction" controller - robot rotates on a spot, trying to find an "clear" direction. When
+3. "Find clear direction" controller - robot rotates on a spot, trying to find a "clear" direction. When
    found, switches to "Go straight".
 
 ## License

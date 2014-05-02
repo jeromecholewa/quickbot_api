@@ -81,7 +81,7 @@ class AvoidCollisionController:
         # backtrack to the tick position
         self._timer += 1
 
-        if self._timer < 15:
+        if self._timer < 10:
             qb.set_speed(-50, -50)
 
         else:

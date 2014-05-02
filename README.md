@@ -38,7 +38,7 @@ All configurable parameters are in config.py file.
 
 1. QuickBot
 
-2. Install (beaglebone_pru_adc)[http://github.com/pgmmpk/beagelbone_pru_adc]
+2. Install [beaglebone_pru_adc](http://github.com/pgmmpk/beagelbone_pru_adc)
     ```
     git clone http://github.com/pgmmpk/beagelbone_pru_adc
     cd beaglebone_pru_adc/

@@ -27,12 +27,18 @@ class PID:
 
     def __call__(self, x):
         self._acc += x
-        if self._acc > self._i_saturation_limit:
-            self._acc = self._i_saturation_limit
-        elif self._acc < -self._i_saturation_limit:
-            self._acc = -self._i_saturation_limit
 
-        out = self.Kp * x + self.Ki * self._acc + self.Kd * (x - self._x_prev)
+        # integral and derivative PID terms
+        extra = self.Ki * self._acc + self.Kd * (x - self._x_prev)
+
+        # saturation logic: do not allow integral and derivative contribution
+        # to exceed saturation limit
+        if extra > self._i_saturation_limit:
+            extra = self._i_saturation_limit
+        elif extra < -self._i_saturation_limit:
+            extra = -self._i_saturation_limit
+
+        out = self.Kp * x + extra
         self._x_prev = x
 
         return out

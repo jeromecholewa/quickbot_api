@@ -18,7 +18,7 @@ if __name__ == '__main__':
     stat = collections.defaultdict(list)
 
     for _ in range(1000):
-        if _ % 1000 == 999:
+        if _ % 200 == 199:
             sys.stdout.write('.')
         time.sleep(0.005)
         values = adc.values

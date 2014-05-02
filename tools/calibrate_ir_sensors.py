@@ -6,6 +6,8 @@ from robot.motor import Motors
 
 if __name__ == '__main__':
 
+    print 'Capturing IR values, wait 5 secons',
+
     adc = adc.Capture()
 
     ir_pins = config.IR_PINS
@@ -15,10 +17,13 @@ if __name__ == '__main__':
     stat = collections.defaultdict(list)
 
     for _ in range(1000):
+        if _ % 1000 == 999:
+            print '.',
         time.sleep(0.005)
         values = adc.values
         for i, pin in enumerate(ir_pins):
             stat[i].append(values[pin])
+    print
 
     adc.stop()
     adc.wait()

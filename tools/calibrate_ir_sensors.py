@@ -1,12 +1,13 @@
 import beaglebone_pru_adc as adc
 import time
 import collections
+import sys
 import config
 from robot.motor import Motors
 
 if __name__ == '__main__':
 
-    print 'Capturing IR values, wait 5 secons',
+    print 'Capturing IR values, wait 5 seconds\n',
 
     adc = adc.Capture()
 
@@ -18,7 +19,7 @@ if __name__ == '__main__':
 
     for _ in range(1000):
         if _ % 1000 == 999:
-            print '.',
+            sys.stdout.write('.')
         time.sleep(0.005)
         values = adc.values
         for i, pin in enumerate(ir_pins):

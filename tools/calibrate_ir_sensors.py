@@ -40,4 +40,4 @@ if __name__ == '__main__':
         min_ = min(stat[i])
         max_ = max(stat[i])
 
-        print '#%d: RANGE: %-4.2lf--%-4.2lf, MEAN: %-4.2lf' % (i, min_, max_, mean)
+        print '#%d: RANGE: %4.2lf--%4.2lf, MEAN: %4.2lf' % (i, min_, max_, mean)

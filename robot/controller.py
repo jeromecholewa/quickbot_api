@@ -5,8 +5,8 @@ import argparse
 import time
 
 import config
-from sysid.sensors import Sensors
-from sysid.motor import Motors
+from robot.sensors import Sensors
+from robot.motor import Motors
 from robot.pid import PID
 
 

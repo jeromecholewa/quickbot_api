@@ -20,6 +20,7 @@ if __name__ == '__main__':
     for _ in range(1000):
         if _ % 200 == 199:
             sys.stdout.write('.')
+            sys.stdout.flush()
         time.sleep(0.005)
         values = adc.values
         for i, pin in enumerate(ir_pins):

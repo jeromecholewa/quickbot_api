@@ -17,6 +17,21 @@ class PID:
     """
 
     def __init__(self, Kp, Ki=0, Kd=0, x0=0, gain_limit=10.0):
+        """
+        Creates an instance of PID controller.
+
+            Kp - proportional gain
+            Ki - integral gain
+            Kd - derivative gain
+            x0 - initial input value (used to compute derivative term)
+            gain_limit - prevents integral term of getting too large (typically because
+                    of actuators saturation). If gain_limit is set to 1., then the integral and
+                    derivative terms together can never exceed the proportional term.
+                    Reasonable value is 2.0, that will allow integral (plus derivative) term
+                    to contribute as much as twice the proportional term. Value of zero
+                    effectively turns off integral and derivative terms. Large value does not
+                    impose any limits, resulting in an ordinary PID behavior.
+        """
         self.Kp = Kp
         self.Ki = Ki
         self.Kd = Kd
@@ -33,11 +48,11 @@ class PID:
 
         # anti-saturation logic: do not allow integral and derivative contribution
         # to exceed gain limit
-        if extra > self._gain_limit * x:
-            extra = self._gain_limit * x
+        if extra > self._gain_limit * self.Kp * x:
+            extra = self._gain_limit * self.Kp * x
             self._acc = 0
-        elif extra < -self._gain_limit * x:
-            extra = -self._gain_limit * x
+        elif extra < -self._gain_limit * self.Kp * x:
+            extra = -self._gain_limit * self.Kp * x
             self._acc = 0
 
         out = self.Kp * x + extra

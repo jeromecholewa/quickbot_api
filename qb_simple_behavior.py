@@ -71,8 +71,9 @@ class AvoidCollisionController:
 
     backtracked = Signal()
 
-    def __init__(self):
+    def __init__(self, speed=50):
         self._timer = 0
+        self._speed = speed
 
     def reset(self):
         self._timer = 0
@@ -82,7 +83,7 @@ class AvoidCollisionController:
         self._timer += 1
 
         if self._timer < 10:
-            qb.set_speed(-50, -50)
+            qb.set_speed(-self._speed, -self._speed)
 
         else:
             qb.set_speed(0, 0)
@@ -96,8 +97,9 @@ class FindNewDirectionController:
 
     no_obstacle = Signal()
 
-    def __init__(self):
+    def __init__(self, speed=50):
         self._timer = 0
+        self._speed = speed
 
     def execute(self, qb):
         self._timer += 1
@@ -114,7 +116,7 @@ class FindNewDirectionController:
             return
 
         else:
-            qb.set_speed(60, -60)
+            qb.set_speed(self._speed, -self._speed)
 
     def reset(self):
         self._timer = 0

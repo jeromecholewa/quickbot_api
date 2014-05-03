@@ -118,6 +118,8 @@ Returns 5-tuple of raw IR readings
 ### QB.get_ir_distances()
 Returns 5-tuple of IR readings converted to distance (in inches)
 
+## Credits
+This project started as a fork of official software http://github.com/o-botics/quickbot_bbb by Rowland O'Flaherty.
 
 ## License
 MIT

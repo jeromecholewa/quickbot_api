@@ -24,7 +24,7 @@ class PID:
             Ki - integral gain
             Kd - derivative gain
             x0 - initial input value (used to compute derivative term)
-            gain_limit - prevents integral term of getting too large (typically because
+            gain_limit - prevents integral term from getting too large (typically because
                     of actuators saturation). If gain_limit is set to 1., then the integral and
                     derivative terms together can never exceed the proportional term.
                     Reasonable value is 2.0, that will allow integral (plus derivative) term

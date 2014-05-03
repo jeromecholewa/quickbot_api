@@ -4,8 +4,8 @@ QuickBot is a mobile robot built as part of the Coursera "Control of the Mobile 
 Georgia Tech. For more information on the QuickBot platform see http://o-botics.org
 
 This package provides high-level API to control QuickBot. Includes utilities to calibrate wheel encoders
-and IR sensors. Example code implements a simple "intelligent" behavior.
-
+and IR sensors. Example code implements a simple "intelligent" behavior: 
+[YouTube show-off](http://youtu.be/5rOYVlgJui8).
 
 ## API overview
 
@@ -118,6 +118,8 @@ Returns 5-tuple of raw IR readings
 ### QB.get_ir_distances()
 Returns 5-tuple of IR readings converted to distance (in inches)
 
+## Credits
+This project started as a fork of official software http://github.com/o-botics/quickbot_bbb by Rowland O'Flaherty.
 
 ## License
 MIT

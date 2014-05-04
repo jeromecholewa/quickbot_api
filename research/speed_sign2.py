@@ -21,7 +21,7 @@ if __name__ == '__main__':
 			ctrl.ticks[0], 
 			ctrl.ticks[1],
 			ctrl._left.torque,
-			ctrl._right.torque
+			ctrl._right.torque,
 			torque))
 
 		if _ == 50:

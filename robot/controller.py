@@ -88,7 +88,7 @@ class Helper(object):
     """
 
     DT = 0.05
-    ALPHA = 0.5
+    ALPHA = 1.0
 
     def __init__(self, speed_sensor, ticks_sensor, Kp=1.0, Ki=0.1, gain_limit=2.0):
         self._speed = speed_sensor

@@ -19,7 +19,9 @@ if __name__ == '__main__':
 			ctrl.actual_speed[0], 
 			ctrl.actual_speed[1], 
 			ctrl.ticks[0], 
-			ctrl.ticks[1], 
+			ctrl.ticks[1],
+			ctrl._left.torque,
+			ctrl._right.torque
 			torque))
 
 		if _ == 50:

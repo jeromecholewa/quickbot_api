@@ -135,6 +135,7 @@ class Helper(object):
         delta_ticks = ticks - self._last_ticks
         self._logical_ticks += self._direction * delta_ticks
         self._logical_speed = self._direction * speed
+        self._last_ticks = ticks
 
     @property
     def ticks(self):

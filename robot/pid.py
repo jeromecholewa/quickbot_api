@@ -50,7 +50,7 @@ class PID:
             self._acc = -self._integral_limit
 
         # integral and derivative PID terms
-        out = self.Lp * x + self.Ki * self._acc + self.Kd * (x - self._x_prev)
+        out = self.Kp * x + self.Ki * self._acc + self.Kd * (x - self._x_prev)
         self._x_prev = x
 
         return out

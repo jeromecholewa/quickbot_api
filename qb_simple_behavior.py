@@ -1,16 +1,18 @@
 """
 Simple behavior, contains three controllers:
 
- 1. Go Straight - this controller tries to keep tick difference between right and left wheel constant, i.e. make
-    bot go as straight as possible.
+ 1. Go Straight - this controller tries to keep tick difference between right
+    and left wheel constant, i.e. make bot go as straight as possible.
 
- 2. Avoid Obstacle - this controller just stops, then backtracks a little (i.e. tries to compensate for
-    bot inertia)
+ 2. Avoid Obstacle - this controller just stops, then backtracks a little
+    (i.e. tries to compensate for bot inertia)
 
- 3. Find New Direction - makes bot rotate on the spot, looking for a clear direction.
+ 3. Find New Direction - makes bot rotate on the spot, looking for a
+    clear direction.
 
-Bot goes straight until it hits an obstacle. It then brakes and backtracks. Then it star rotating, looking for
-a direction where there is no obstacles. When found, it will run straight.
+Bot goes straight until it hits an obstacle. It then brakes and backtracks.
+Then it start rotating, looking for a direction where there is no obstacles.
+When found, it will run straight.
 """
 import time
 from qb_client import QBClient
@@ -18,8 +20,8 @@ from qb_client import QBClient
 
 class Signal:
     """
-    Utility class: implements observer pattern. Interested parties can register their listeners and
-    broadcast events.
+    Utility class: implements observer pattern. Interested parties can register
+    their listeners and broadcast events.
     """
 
     def __init__(self):
@@ -38,19 +40,19 @@ class Signal:
 
 class GoStraightController:
     """
-    Controller that tries to maintain a fixed difference between left wheel ticks and right wheel ticks.
-    This makes bot go straight.
-
+    Controller that just goes straigh until it "sees" an head-on obstacle.
     Emits |obstacle| signal when detects an obstacle.
     """
 
     obstacle = Signal()
 
-    def __init__(self, Kp=1.0, Ki=0.03, Kd=0.0, speed=50):
+    def __init__(self, speed=50, distance_threshold=7):
         self._speed = speed
+        self._distance_threshold = distance_threshold
 
     def execute(self, qb):
-        if min(qb.get_ir_distances()[2:4]) < 7:  # head-on obstacle!
+        if min(qb.get_ir_distances()[2:4]) < self._distance_threshold:
+            # head-on obstacle!
             qb.set_speed(0, 0)  # stop!
             self.obstacle.emit()
 
@@ -63,17 +65,17 @@ class GoStraightController:
 
 class AvoidCollisionController:
     """
-    Measures how far bot goes after it was commanded to stop, then backtracks to compensate for this
-    overshoot.
+    Reverses direction trying to establish some distance from the obstacle.
 
     When finished, emits |backtracked| signal.
     """
 
     backtracked = Signal()
 
-    def __init__(self, speed=50):
-        self._timer = 0
+    def __init__(self, speed=50, distance_threshold=10):
         self._speed = speed
+        self._distance_threshold = distance_threshold
+        self._timer = 0
 
     def reset(self):
         self._timer = 0
@@ -82,7 +84,7 @@ class AvoidCollisionController:
         # backtrack to the tick position
         self._timer += 1
 
-        if self._timer < 10:
+        if self._timer < self._distance_threshold:
             qb.set_speed(-self._speed, -self._speed)
 
         else:
@@ -92,25 +94,33 @@ class AvoidCollisionController:
 
 class FindNewDirectionController:
     """
-    Rotates bot, looking for a direction where there is no obstacles. Whn found, emits |no_obstacle| signal.
+    Rotates bot, looking for a direction where there is no obstacles. When
+    found, emits |no_obstacle| signal.
     """
 
     no_obstacle = Signal()
 
-    def __init__(self, speed=50):
-        self._timer = 0
+    def __init__(self,
+                 speed=50,
+                 pause_duration=10,
+                 move_duration=10,
+                 distance_threshold=15):
         self._speed = speed
+        self._pause_duration = pause_duration
+        self._move_duration = move_duration
+        self._distance_threshold = distance_threshold
+        self._timer = 0
 
     def execute(self, qb):
         self._timer += 1
 
-        if self._timer < 10:
-            if min(qb.get_ir_distances()[2:4]) > 15:
+        if self._timer < self._pause_duration:
+            if min(qb.get_ir_distances()[2:4]) > self._distance_threshold:
                 qb.set_speed(0, 0)
                 self.no_obstacle.emit()
                 return
 
-        elif self._timer > 20:
+        elif self._timer > self._pause_duration + self._move_duration:
             self._timer = 0
             qb.set_speed(0, 0)
             return
@@ -124,14 +134,29 @@ class FindNewDirectionController:
 
 class Supervisor:
     """
-    Implements behavior by utilizing three controllers and managing transitions between these controllers.
+    Implements behavior by utilizing three controllers and managing
+    transitions between these controllers.
     """
 
-    def __init__(self):
+    def __init__(self, config):
 
-        self._go_straight = GoStraightController()
-        self._avoid_collision = AvoidCollisionController()
-        self._find_new_direction = FindNewDirectionController()
+        self._go_straight = GoStraightController(
+            speed=config.GO_STRAIGHT['speed'],
+            distance_threshold=config.GO_STRAIGHT['distance_threshold']
+        )
+
+        self._avoid_collision = AvoidCollisionController(
+            speed=config.AVOID_COLLISION['speed'],
+            distance_threshold=config.AVOID_COLLISION['distance_threshold']
+        )
+
+        self._find_new_direction = FindNewDirectionController(
+            speed=config.FIND_NEW_DIRECTION['speed'],
+            pause_duration=config.FIND_NEW_DIRECTION['pause_duration'],
+            move_duration=config.FIND_NEW_DIRECTION['move_duration'],
+            distance_threshold=config.FIND_NEW_DIRECTION['distance_threshold']
+        )
+
         self.current = self._go_straight
 
         self._go_straight.obstacle.connect(self.on_obstacle)
@@ -156,13 +181,9 @@ class Supervisor:
 
 if __name__ == '__main__':
 
-    # change the following to match your setup
-    ROBOT_ADDR = ('192.168.0.9', 5005)
-    BASE_ADDR = ('192.168.0.6', 5005)
-
-    supervisor = Supervisor()
-
     import config
+
+    supervisor = Supervisor(config)
 
     with QBClient.connect(config.ROBOT_IP, config.BASE_IP, config.PORT) as qb:
 
@@ -173,7 +194,5 @@ if __name__ == '__main__':
 
             print qb.get_ir_distances()
 
-
         # stop motors
         qb.set_speed(0, 0)
-

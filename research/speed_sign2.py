@@ -27,14 +27,20 @@ if __name__ == '__main__':
 		if _ == 50:
 			torque = 50
 			ctrl._motors.run(50, 50)
+			ctrl._left.run(50)
+			ctrl._right.run(50)
 
 		if _ == 150:
 			torque = -50
 			ctrl._motors.run(-50, -50)
+			ctrl._left.run(-50)
+			ctrl._right.run(-50)
 
 		if _ == 250:
 			torque = 0
 			ctrl._motors.run(0, 0)
+			ctrl._left.run(0)
+			ctrl._right.run(0)
 
 	with open('speed_sign2.csv', 'w') as f:
 		for datum in data:

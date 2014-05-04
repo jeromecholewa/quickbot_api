@@ -5,6 +5,8 @@ import time
 
 if __name__ == '__main__':
 
+	SPEED = 40
+
 	motors = Motors(config)
 	sensors = Sensors(config)
 	sensors.start()
@@ -25,12 +27,12 @@ if __name__ == '__main__':
 			torque))
 
 		if _ == 50:
-			torque = 50
-			motors.run(50, 50)
+			torque = SPEED
+			motors.run(SPEED, SPEED)
 
 		if _ == 150:
-			torque = -50
-			motors.run(-50, -50)
+			torque = -SPEED
+			motors.run(-SPEED, -SPEED)
 
 		if _ == 250:
 			torque = 0

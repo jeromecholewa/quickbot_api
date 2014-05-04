@@ -1,10 +1,13 @@
 from robot.motor import Motors
 from robot.sensors import Sensors
+import config
+import time
 
 if __name__ == '__main__':
 
-	motors = Motors()
-	sensors = Sensors()
+	motors = Motors(config)
+	sensors = Sensors(config)
+	sensors.start()
 
 	torque = 0
 
@@ -14,20 +17,20 @@ if __name__ == '__main__':
 		time.sleep(0.01)
 		sensors.read()
 		
-		data.append(sensors.timer, 
+		data.append((sensors.timer, 
 			sensors.speed_left, 
 			sensors.speed_right, 
 			sensors.enc_ticks_left, 
 			sensors.enc_ticks_right, 
-			torque)
+			torque))
 
 		if _ == 50:
 			torque = 50
-			motors.run(50)
+			motors.run(50, 50)
 
 		if _ == 150:
 			torque = -50
-			motors.run(-150)
+			motors.run(-50, -50)
 
 		if _ == 250:
 			torque = 0

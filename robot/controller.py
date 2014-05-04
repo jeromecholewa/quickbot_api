@@ -1,5 +1,6 @@
 """
-Controller that stabilises wheel speed across all surfaces (carpet, hardwood, asphalt)
+Controller that stabilises wheel speed across all surfaces (carpet,
+hardwood, asphalt)
 """
 import argparse
 import time
@@ -15,8 +16,8 @@ class BotController(object):
     This controller uses PID in a closed-loop to stabilise bot speed regardless
     of surface it is on (hard, carpet, asphalt).
 
-    It also presents signed ticks and signed speed readings to the user, courtesy of
-    Helper class (see below).
+    It also presents signed ticks and signed speed readings to the user,
+    courtesy of Helper class (see below).
 
     This class expects that its on_timer() method is called at 100Hz frequency.
     """
@@ -37,8 +38,10 @@ class BotController(object):
         def right_ticks():
             return self._sensors.enc_ticks_left
 
-        self._left = Helper(speed_sensor=left_speed, ticks_sensor=left_ticks)
-        self._right = Helper(speed_sensor=right_speed, ticks_sensor=right_ticks)
+        self._left = Helper(speed_sensor=left_speed,
+                            ticks_sensor=left_ticks)
+        self._right = Helper(speed_sensor=right_speed,
+                             ticks_sensor=right_ticks)
 
     def start(self):
         self._sensors.start()
@@ -78,19 +81,25 @@ class BotController(object):
 
 class Helper(object):
     """
-    Models speed dynamics to keep track of speed crossing zero - thus inferring speed and tick signs.
+    Models speed dynamics to keep track of speed crossing zero - thus
+    inferring speed and tick signs.
 
-    Facades the real encoder values (unsigned) and presents to the user signed readings of
-    ticks and speed.
+    Facades the real encoder values (unsigned) and presents to the user
+    signed readings of ticks and speed.
 
-    This class expects that its on_timer() method is called at 100Hz frequency (dynamical constants were
-    fit using this assumption).
+    This class expects that its on_timer() method is called at 100Hz frequency
+    (dynamical constants were fit using this assumption).
     """
 
     DT = 0.05
     ALPHA = 1.0
 
-    def __init__(self, speed_sensor, ticks_sensor, Kp=1.6, Ki=0.2, integral_limit=300.0):
+    def __init__(self,
+                 speed_sensor,
+                 ticks_sensor,
+                 Kp=1.6,
+                 Ki=0.2,
+                 integral_limit=300.0):
         self._speed = speed_sensor
         self._ticks = ticks_sensor
 
@@ -121,8 +130,9 @@ class Helper(object):
             return
 
         old_predicted_speed = self._predicted_speed
-        self._predicted_speed += self.DT * (self.torque * self._direction - self._predicted_speed
-                                            + self.ALPHA * (speed - self._predicted_speed))
+        self._predicted_speed += self.DT * (
+            self.torque * self._direction
+            - self._predicted_speed + self.ALPHA * (speed - self._predicted_speed))
         if self._direction != 0 and (old_predicted_speed * self._predicted_speed < 0
                                      or 0 < self._predicted_speed < 1.0):
             # predicted speed changed sign

@@ -39,3 +39,20 @@ IR_CALIBRATION = [
     (-224.55972696245738, 4294.4436860068263, 1.3310580204778155),
 ]
 
+# Controller parameters
+GO_STRAIGHT = {
+    'speed': 40.0,  # how fast do we go?
+    'distance_threshold': 7.0  # when do we flag head-on obstacle?
+}
+
+AVOID_COLLISION = {
+    'speed': 40.0,  # how fast do we "jump back"?
+    'distance_threshold': 10.0  # at what distance do we stop backtracking?
+}
+
+FIND_NEW_DIRECTION = {
+    'speed': 40.0,  # how fast do we rotate?
+    'pause_duration': 10,  # how many controller ticks do we stay still?
+    'move_duration': 10,  # how many controller ticks do we rotate?
+    'distance_threshold': 15.0  # if no object closer than this, declare direction "clear"
+}

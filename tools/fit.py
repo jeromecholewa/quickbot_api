@@ -124,22 +124,22 @@ if __name__ == '__main__':
     3. And repeat last time, positioning an obstacle 12 inches away.
     """
 
-    ## each of total 5 sensors at 3in:
-    v3  = [1005, 971, 650, 771, 836]
-
-    ## at 6in
-    v6  = [595, 579, 315, 374, 402]
+    ## each of total 5 sensors at 6in:
+    v6  = [898, 862, 769, 989, 719]
 
     ## at 12in
-    v12 = [339, 352, 87, 148, 120]
+    v12 = [469, 523, 382, 454, 302]
+
+    ## at 24in
+    v24 = [270, 346, 106, 188, 113]
 
     print 'IR_CALIBRATION=['
     for sensor in range(5):
-        print '\t', fit([3, 6, 12], [v3[sensor], v6[sensor], v12[sensor]]), ','
+        print '\t', fit([6, 12, 24], [v6[sensor], v12[sensor], v24[sensor]]), ','
     print ']'
 
     sensor = 1
-    alpha, beta, gamma = fit([3, 6, 12], [v3[sensor], v6[sensor], v12[sensor]])
+    alpha, beta, gamma = fit([6, 12, 24], [v6[sensor], v12[sensor], v24[sensor]])
     dd = []
     for vv in range(0, 4000):
         dd.append(distance(alpha, beta, gamma, vv))

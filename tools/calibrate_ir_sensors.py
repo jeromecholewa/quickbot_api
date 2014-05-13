@@ -10,12 +10,15 @@ if __name__ == '__main__':
     print 'Capturing IR values, wait 5 seconds\n',
 
     adc = adc.Capture()
+    adc.ema_pow = 10
 
     ir_pins = config.IR_PINS
 
     adc.start()
 
     stat = collections.defaultdict(list)
+
+    time.sleep(0.01)
 
     for _ in range(1000):
         if _ % 200 == 199:
@@ -24,7 +27,7 @@ if __name__ == '__main__':
         time.sleep(0.005)
         values = adc.values
         for i, pin in enumerate(ir_pins):
-            stat[i].append(values[pin])
+            stat[i].append(values[pin] / 1024)
     print
 
     adc.stop()
@@ -41,3 +44,6 @@ if __name__ == '__main__':
         max_ = max(stat[i])
 
         print '#%d: RANGE: %4.2lf--%4.2lf, MEAN: %4.2lf' % (i, min_, max_, mean)
+
+	with open('x%s.csv' % i, 'wb') as f:
+            f.write('\n'.join(str(x) for x in stat[i]))

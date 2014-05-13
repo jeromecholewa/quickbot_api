@@ -138,13 +138,14 @@ if __name__ == '__main__':
         print '\t', fit([6, 12, 24], [v6[sensor], v12[sensor], v24[sensor]]), ','
     print ']'
 
-    sensor = 1
-    alpha, beta, gamma = fit([6, 12, 24], [v6[sensor], v12[sensor], v24[sensor]])
-    dd = []
-    for vv in range(0, 4000):
-        dd.append(distance(alpha, beta, gamma, vv))
+    for sensor in range(5):
+        alpha, beta, gamma = fit([6, 12, 24], [v6[sensor], v12[sensor], v24[sensor]])
+        dd = []
+        for vv in range(0, 4000):
+            dd.append(distance(alpha, beta, gamma, vv))
 
-    import matplotlib.pyplot as plt
+        import matplotlib.pyplot as plt
 
-    plt.plot(dd)
+        plt.plot(dd)
+
     plt.show()

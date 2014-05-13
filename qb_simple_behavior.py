@@ -51,7 +51,7 @@ class GoStraightController:
         self._distance_threshold = distance_threshold
 
     def execute(self, qb):
-        if min(qb.get_ir_distances()[2:4]) < self._distance_threshold:
+        if min(qb.get_ir_distances()[1:4]) < self._distance_threshold:
             # head-on obstacle!
             qb.set_speed(0, 0)  # stop!
             self.obstacle.emit()
@@ -115,7 +115,7 @@ class FindNewDirectionController:
         self._timer += 1
 
         if self._timer < self._pause_duration:
-            if min(qb.get_ir_distances()[2:4]) > self._distance_threshold:
+            if min(qb.get_ir_distances()[1:4]) > self._distance_threshold:
                 qb.set_speed(0, 0)
                 self.no_obstacle.emit()
                 return

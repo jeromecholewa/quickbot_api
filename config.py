@@ -2,7 +2,7 @@
 # Pin assignments for QuickBot, and other configuration parameters.
 #
 BASE_IP = '192.168.0.6'
-ROBOT_IP = '192.168.0.9'
+ROBOT_IP = '192.168.0.8'
 PORT = 5005
 
 MOTOR_LEFT = {

@@ -1,7 +1,7 @@
 #
 # Pin assignments for QuickBot, and other configuration parameters.
 #
-BASE_IP = '192.168.0.6'
+BASE_IP = '192.168.0.5'
 ROBOT_IP = '192.168.0.8'
 PORT = 5005
 
@@ -11,7 +11,7 @@ MOTOR_LEFT = {
     'pwm' : 'P9_16',
 
     'encoder_pin'      : 0,  # AIN0
-    'encoder_threshold': 2764,  ## calibrated!
+    'encoder_threshold': 2500,  ## calibrated!
     'encoder_delay'    : 50
 }
 
@@ -21,7 +21,7 @@ MOTOR_RIGHT = {
     'pwm' : 'P9_14',
 
     'encoder_pin'      : 2,  # AIN2
-    'encoder_threshold': 2764,  ## calibrated!
+    'encoder_threshold': 2500,  ## calibrated!
     'encoder_delay'    : 50
 }
 
@@ -31,13 +31,7 @@ EMA_POW = 11  # 2**EMA_POW is the averaging time of IR readings (in ADC timer ti
               # ADC timer runs at about 120000 ticks per second
 
 # IR sensor calibration constants (see fit.py)
-IR_CALIBRATION=[
-    (0, 460*12.0, 0) ,
-    (0, 529*12.0, 0) ,
-    (0, 362*12.0, 0) ,
-    (0, 318*12.0, 0) ,
-    (0, 322*12.0, 0) ,
-]
+IR_CALIBRATION = 5555.5
 
 # Controller parameters
 GO_STRAIGHT = {

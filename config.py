@@ -11,7 +11,7 @@ MOTOR_LEFT = {
     'pwm' : 'P9_16',
 
     'encoder_pin'      : 0,  # AIN0
-    'encoder_threshold': 3000,  ## calibrated!
+    'encoder_threshold': 2764,  ## calibrated!
     'encoder_delay'    : 50
 }
 
@@ -21,7 +21,7 @@ MOTOR_RIGHT = {
     'pwm' : 'P9_14',
 
     'encoder_pin'      : 2,  # AIN2
-    'encoder_threshold': 2500,  ## calibrated!
+    'encoder_threshold': 2764,  ## calibrated!
     'encoder_delay'    : 50
 }
 

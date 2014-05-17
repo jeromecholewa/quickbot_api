@@ -11,6 +11,7 @@ if __name__ == '__main__':
 
     adc = adc.Capture()
     adc.ema_pow = 10
+    scale = 2 ** 10
 
     ir_pins = config.IR_PINS
 
@@ -18,7 +19,7 @@ if __name__ == '__main__':
 
     stat = collections.defaultdict(list)
 
-    time.sleep(0.01)
+    time.sleep(0.1)
 
     for _ in range(1000):
         if _ % 200 == 199:
@@ -27,7 +28,7 @@ if __name__ == '__main__':
         time.sleep(0.005)
         values = adc.values
         for i, pin in enumerate(ir_pins):
-            stat[i].append(values[pin] / 1024)
+            stat[i].append(values[pin] / scale)
     print
 
     adc.stop()
@@ -40,10 +41,11 @@ if __name__ == '__main__':
 
     for i in range(len(ir_pins)):
         mean = sum(stat[i]) / len(stat[i])
+	median = sorted(stat[i])[len(stat[i])/2]
         min_ = min(stat[i])
         max_ = max(stat[i])
 
-        print '#%d: RANGE: %4.2lf--%4.2lf, MEAN: %4.2lf' % (i, min_, max_, mean)
+	print '#%d: RANGE: %4.2lf--%4.2lf, MEAN: %4.2lf, MEDIAN: %4.2lf' % (i, min_, max_, mean, median)
 
 	with open('x%s.csv' % i, 'wb') as f:
             f.write('\n'.join(str(x) for x in stat[i]))

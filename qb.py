@@ -42,13 +42,8 @@ class QB(object):
     def set_speed(self, speed_left, speed_right):
         self._bot.run(speed_left, speed_right)
 
-    def get_ir(self):
-        return self._bot.values
-
     def get_ir_distances(self):
-        return tuple(
-            distance(c[0], c[1], c[2], v) for v, c in zip(self._bot.values, self._ir_calibration)
-        )
+        return tuple( self._ir_calibration / x for x in self._bot.values )
 
     def get_ticks(self):
         ticks_left, ticks_right = self._bot.ticks

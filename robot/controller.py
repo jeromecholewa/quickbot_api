@@ -36,7 +36,7 @@ class BotController(object):
             return self._sensors.enc_ticks_left
 
         def right_ticks():
-            return self._sensors.enc_ticks_left
+            return self._sensors.enc_ticks_right
 
         self._left = Helper(speed_sensor=left_speed,
                             ticks_sensor=left_ticks)

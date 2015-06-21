@@ -42,6 +42,9 @@ class QB(object):
     def set_speed(self, speed_left, speed_right):
         self._bot.run(speed_left, speed_right)
 
+    def get_ir(self):
+        return tuple(self._bot.values)
+
     def get_ir_distances(self):
         return tuple( self._ir_calibration / x for x in self._bot.values )
 
